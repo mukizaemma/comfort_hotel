@@ -39,9 +39,7 @@ $currentRoute = request()->route()->getName();
             @endif
 
             {{-- Content Management Features - ONLY these items, no mixing with other dashboards --}}
-            <a href="{{ route('content-management.services') }}" class="nav-item nav-link {{ str_contains($currentRoute, 'content-management.services') ? 'active' : '' }}">
-                <i class="fa fa-concierge-bell me-2"></i>Services
-            </a>
+            {{-- Services menu hidden --}}
             <a href="{{ route('content-management.rooms') }}" class="nav-item nav-link {{ str_contains($currentRoute, 'content-management.rooms') ? 'active' : '' }}">
                 <i class="fas fa-bed me-2"></i>Rooms
             </a>

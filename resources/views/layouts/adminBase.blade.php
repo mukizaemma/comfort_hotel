@@ -84,6 +84,39 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script src="/admin/js/summernote.js"></script>
+
+    {{-- Ensure admin modals can be closed via close button (BS4 loads last; close uses jQuery or BS5 API) --}}
+    <script>
+    (function() {
+        function closeModal(trigger) {
+            var modalEl = trigger.closest ? trigger.closest('.modal') : null;
+            if (!modalEl) return;
+            if (typeof jQuery !== 'undefined' && jQuery(modalEl).modal) {
+                jQuery(modalEl).modal('hide');
+            } else if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                var instance = bootstrap.Modal.getInstance(modalEl);
+                if (instance) instance.hide();
+                else new bootstrap.Modal(modalEl).hide();
+            } else {
+                modalEl.classList.remove('show');
+                modalEl.style.display = 'none';
+                modalEl.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('overflow');
+                document.body.style.removeProperty('padding-right');
+                var backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(function(b) { b.remove(); });
+            }
+        }
+        document.addEventListener('click', function(e) {
+            var t = e.target.closest('[data-bs-dismiss="modal"], [data-dismiss="modal"]');
+            if (t) {
+                e.preventDefault();
+                closeModal(t);
+            }
+        });
+    })();
+    </script>
 </body>
 
 </html>

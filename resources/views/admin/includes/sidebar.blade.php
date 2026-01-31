@@ -19,7 +19,7 @@
             <a href="{{ route('dashboard') }}" class="nav-item nav-link active"><i class="fas fa-grip-horizontal me-2"></i>Dashboard</a>
              
             <a href="{{ route('aboutPage') }}" class="nav-item nav-link"> <i class="fas fa-home me-2"></i>About Us</a>
-            <a href="{{ route('getServices') }}" class="nav-item nav-link"> <i class="fa fa-concierge-bell me-2"></i>Services</a>
+            {{-- Services menu hidden --}}
             <a href="{{ route('getRooms') }}" class="nav-item nav-link"> <i class="fas fa-bed me-2"></i>Rooms</a>
             {{-- <a href="{{ route('getTrips') }}" class="nav-item nav-link"> <i class="fas fa-map-marked-alt me-2"></i>Tours</a>
             <a href="{{ route('getPromotions') }}" class="nav-item nav-link"> <i class="fas fa-tags me-2"></i>Promotions</a> --}}

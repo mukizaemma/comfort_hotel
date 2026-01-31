@@ -20,9 +20,16 @@
             }
         @endphp
 
+        @php
+            $setting = App\Models\Setting::first();
+            $user = auth()->user();
+            $avatarUrl = $user->profile_photo_path
+                ? $user->profile_photo_url
+                : (($setting && $setting->logo) ? asset('storage/images') . $setting->logo : $user->profile_photo_url);
+        @endphp
         <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                <img class="rounded-circle me-lg-2" src="{{ $avatarUrl }}" alt="{{ $user->name }}" style="width: 40px; height: 40px; object-fit: cover;">
                 <span class="d-none d-lg-inline-flex">{{ auth()->user()->name }}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
