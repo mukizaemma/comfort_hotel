@@ -317,6 +317,8 @@ Route::get('/apartment', [App\Http\Controllers\HomeController::class, 'apartment
 Route::get('/guesthouse', [App\Http\Controllers\HomeController::class, 'guesthouse'])->name('guesthouse');
 Route::get('/facilities', [App\Http\Controllers\HomeController::class, 'facilities'])->name('facilities');
 Route::get('/facilities/{slug}', [App\Http\Controllers\HomeController::class, 'facility'])->name('facility');
+Route::get('/activities', [App\Http\Controllers\HomeController::class, 'activities'])->name('activities');
+Route::get('/activities/{slug}', [App\Http\Controllers\HomeController::class, 'activity'])->name('activity');
 Route::get('/terms-and-conditions', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
 
 // Reviews Routes

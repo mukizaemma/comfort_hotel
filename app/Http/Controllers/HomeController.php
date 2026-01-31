@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Gallery;
 use App\Models\PageHero;
+use App\Models\TourActivity;
 
 
 class HomeController extends Controller
@@ -214,6 +215,34 @@ class HomeController extends Controller
         ]);
     }
 
+    public function activities(){
+        $activities = TourActivity::with('images')->where('status', 'Active')->oldest()->get();
+        $setting = Setting::first();
+        $about = About::first();
+        $pageHero = PageHero::getBySlug('activities');
+        return view('frontend.activities', [
+            'activities' => $activities,
+            'setting' => $setting,
+            'about' => $about,
+            'pageHero' => $pageHero,
+        ]);
+    }
+
+    public function activity($slug){
+        $activity = TourActivity::with('images')->where('slug', $slug)->where('status', 'Active')->firstOrFail();
+        $images = $activity->images()->orderBy('order')->get();
+        $allActivities = TourActivity::where('status', 'Active')->where('id', '!=', $activity->id)->oldest()->take(3)->get();
+        $setting = Setting::first();
+        $about = About::first();
+        return view('frontend.activity', [
+            'activity' => $activity,
+            'images' => $images,
+            'allActivities' => $allActivities,
+            'setting' => $setting,
+            'about' => $about,
+        ]);
+    }
+
     public function gallery(){
         $galleryImages = Gallery::where('media_type', 'image')
             ->whereNotNull('image')
@@ -320,6 +349,7 @@ class HomeController extends Controller
 
     public function bookNow(Request $request){
         $isFacility = $request->filled('facility_id');
+        $isTourActivity = $request->filled('tour_activity_id');
         $rules = [
             'names' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -330,7 +360,9 @@ class HomeController extends Controller
             'children' => 'nullable|integer|min:0',
             'message' => 'nullable|string|max:1000',
         ];
-        if ($isFacility) {
+        if ($isTourActivity) {
+            $rules['tour_activity_id'] = 'required|exists:tour_activities,id';
+        } elseif ($isFacility) {
             $rules['facility_id'] = 'required|exists:facilities,id';
         } else {
             $rules['room_id'] = 'required|exists:rooms,id';
@@ -350,16 +382,25 @@ class HomeController extends Controller
         $booking->booking_type = 'online';
         $booking->paid_amount = 0;
 
-        if ($isFacility) {
+        if ($isTourActivity) {
+            $booking->tour_activity_id = $request->input('tour_activity_id');
+            $booking->reservation_type = 'tour_activity';
+            $booking->room_id = null;
+            $booking->facility_id = null;
+            $booking->total_amount = 0;
+            $booking->balance_amount = 0;
+        } elseif ($isFacility) {
             $booking->facility_id = $request->input('facility_id');
             $booking->reservation_type = 'facility';
             $booking->room_id = null;
+            $booking->tour_activity_id = null;
             $booking->total_amount = 0;
             $booking->balance_amount = 0;
         } else {
             $booking->room_id = $request->input('room_id');
             $booking->reservation_type = 'room';
             $booking->facility_id = null;
+            $booking->tour_activity_id = null;
             $room = Room::findOrFail($request->input('room_id'));
             $checkin = new \DateTime($request->input('checkin'));
             $checkout = new \DateTime($request->input('checkout'));

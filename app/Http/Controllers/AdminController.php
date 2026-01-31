@@ -148,7 +148,7 @@ class AdminController extends Controller
             'status' => 'required|in:confirmed,cancelled',
             'admin_reply' => 'required|string|max:2000',
         ]);
-        $booking = Booking::with(['room', 'facility'])->findOrFail($id);
+        $booking = Booking::with(['room', 'facility', 'tourActivity'])->findOrFail($id);
         $booking->status = $request->status;
         $booking->admin_reply = $request->admin_reply;
         $booking->admin_replied_at = now();
@@ -156,9 +156,14 @@ class AdminController extends Controller
 
         $guestEmail = $booking->email;
         if ($guestEmail) {
-            $itemName = $booking->reservation_type === 'facility' && $booking->facility
-                ? $booking->facility->title
-                : ($booking->room ? $booking->room->title : 'Room');
+            $itemName = 'Room';
+            if ($booking->reservation_type === 'facility' && $booking->facility) {
+                $itemName = $booking->facility->title;
+            } elseif ($booking->reservation_type === 'tour_activity' && $booking->tourActivity) {
+                $itemName = $booking->tourActivity->title;
+            } elseif ($booking->room) {
+                $itemName = $booking->room->title;
+            }
             $statusLabel = $request->status === 'confirmed' ? 'Confirmed' : 'Cancelled';
             $subject = 'Reservation ' . $statusLabel . ' - ' . $itemName;
             $body = "Hello " . $booking->names . ",\n\n";

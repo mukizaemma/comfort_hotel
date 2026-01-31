@@ -238,6 +238,7 @@
                                             <li role="menuitem"><a href="{{route('about')}}#background">Background</a></li>
                                             <li role="menuitem"><a href="{{route('terms')}}">Terms & Conditions</a></li>
                                             <li role="menuitem"><a href="{{route('contact')}}">Contacts</a></li>
+                                            <li role="menuitem"><a href="{{route('updates')}}">Updates</a></li>
                                         </ul>
                                     </li>
 
@@ -250,7 +251,7 @@
                                     </li>
 
                                     <li class="navigation__menu--item">
-                                        <a href="{{route('updates')}}" class="navigation__menu--item__link">Updates</a>
+                                        <a href="{{route('activities')}}" class="navigation__menu--item__link">Activities</a>
                                     </li>
 
                                     <li class="navigation__menu--item">
@@ -475,9 +476,16 @@
                                         <span class="toggle"></span>
                                     </a>
                                 </li>
-                                <li class="slide">
+                                <li class="slide has__children">
                                     <a class="slide__menu__item" href="{{ route('about') }}">About us
+                                        <span class="toggle"></span>
                                     </a>
+                                    <ul class="slide__menu">
+                                        <li><a href="{{ route('about') }}#background">Background</a></li>
+                                        <li><a href="{{ route('terms') }}">Terms & Conditions</a></li>
+                                        <li><a href="{{ route('contact') }}">Contacts</a></li>
+                                        <li><a href="{{ route('updates') }}">Updates</a></li>
+                                    </ul>
                                 </li>
                                 <li class="slide has__children">
                                     <a class="slide__menu__item" href="{{ route('rooms') }}">Rooms
@@ -500,6 +508,10 @@
                                       @endforeach
                                         
                                     </ul>
+                                </li>
+                                <li class="slide">
+                                    <a class="slide__menu__item" href="{{ route('activities') }}">Tour Activities
+                                    </a>
                                 </li>
                                 <li class="slide has__children">
                                     <a class="slide__menu__item" href="{{ route('gallery') }}">Gallery

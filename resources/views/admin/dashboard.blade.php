@@ -106,7 +106,7 @@
                                 @foreach($bookings as $rs)
                                 <tr>
                                     <td>{{ $rs->created_at ? $rs->created_at->format('Y-m-d H:i') : '' }}</td>
-                                    <td><span class="badge {{ ($rs->reservation_type ?? 'room') === 'facility' ? 'bg-info' : 'bg-primary' }}">{{ ucfirst($rs->reservation_type ?? 'room') }}</span></td>
+                                    <td><span class="badge {{ ($rs->reservation_type ?? 'room') === 'facility' ? 'bg-info' : (($rs->reservation_type ?? '') === 'tour_activity' ? 'bg-success' : 'bg-primary') }}">{{ ($rs->reservation_type ?? 'room') === 'tour_activity' ? 'Tour Activity' : ucfirst(str_replace('_', ' ', $rs->reservation_type ?? 'room')) }}</span></td>
                                     <td>{{ $rs->names ?? '' }}</td>
                                     <td>{{ $rs->email ?? '' }}</td>
                                     <td>{{ $rs->checkin_date ? $rs->checkin_date->format('Y-m-d') : ($rs->checkin ?? '') }}</td>

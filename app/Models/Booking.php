@@ -28,6 +28,7 @@ class Booking extends Model
         'status',
         'room_id',
         'facility_id',
+        'tour_activity_id',
         'reservation_type',
         'assigned_room_id',
         'total_amount',
@@ -55,6 +56,10 @@ class Booking extends Model
 
     public function facility(){
         return $this->belongsTo(\App\Models\Facility::class, 'facility_id');
+    }
+
+    public function tourActivity(){
+        return $this->belongsTo(\App\Models\TourActivity::class, 'tour_activity_id');
     }
 
     public function assignedRoom(){
