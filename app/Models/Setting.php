@@ -16,7 +16,6 @@ class Setting extends Model
         'address',
         'email',
         'phone',
-        'address',
         'logo',
         'deliveryInfo',
         'facebook',
@@ -25,5 +24,6 @@ class Setting extends Model
         'youtube',
         'linkedin',
         'quote',
+        'google_map_embed',
     ];
 }

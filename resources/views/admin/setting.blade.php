@@ -68,6 +68,14 @@
                                 </div>
                             </fieldset>
                             <fieldset class="mb-4">
+                                <legend class="h6 text-secondary border-bottom pb-2 mb-3">Google Map</legend>
+                                <p class="text-muted small mb-2">Paste the embed code from Google Maps (Share → Embed a map). Used on Home, Contact, and About pages.</p>
+                                <div class="mb-0">
+                                    <label for="google_map_embed" class="form-label">Embed code (iframe)</label>
+                                    <textarea class="form-control font-monospace" id="google_map_embed" name="google_map_embed" rows="6" placeholder="<iframe src=&quot;https://www.google.com/maps/embed?pb=...&quot; ...></iframe>">{{ $data->google_map_embed ?? '' }}</textarea>
+                                </div>
+                            </fieldset>
+                            <fieldset class="mb-4">
                                 <legend class="h6 text-secondary border-bottom pb-2 mb-3">Social media</legend>
                                 <div class="row g-3">
                                     <div class="col-md-6">

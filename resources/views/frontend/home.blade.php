@@ -262,19 +262,23 @@
         <div class="row g-30">
             <div class="col-lg-6 wow fadeInLeft">
                 <div style="height: 500px; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    @php
-                        $hotelContact = \App\Models\HotelContact::first();
-                        $latitude = $hotelContact->latitude ?? '-1.9441';
-                        $longitude = $hotelContact->longitude ?? '30.0619';
-                    @endphp
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.497311415315!2d{{ $longitude }}!3d{{ $latitude }}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z{{ $latitude }},{{ $longitude }}!5e0!3m2!1sen!2srw!4v1234567890"
-                        width="100%" 
-                        height="100%" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy">
-                    </iframe>
+                    @if(!empty($setting->google_map_embed))
+                        {!! $setting->google_map_embed !!}
+                    @else
+                        @php
+                            $hotelContact = \App\Models\HotelContact::first();
+                            $latitude = $hotelContact->latitude ?? '-1.9441';
+                            $longitude = $hotelContact->longitude ?? '30.0619';
+                        @endphp
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.497311415315!2d{{ $longitude }}!3d{{ $latitude }}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z{{ $latitude }},{{ $longitude }}!5e0!3m2!1sen!2srw!4v1234567890"
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy">
+                        </iframe>
+                    @endif
                 </div>
             </div>
             <div class="col-lg-6 wow fadeInRight">

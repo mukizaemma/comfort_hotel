@@ -50,6 +50,7 @@ class SettingsController extends Controller
         $data->linktree = $request->input('linktree');
         $data->keywords = $request->input('keywords');
         $data->quote = $request->input('quote');
+        $data->google_map_embed = $request->input('google_map_embed');
         $data->user_id = Auth()->user()->id;
 
 

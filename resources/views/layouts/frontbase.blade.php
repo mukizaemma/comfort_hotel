@@ -166,6 +166,10 @@
                                     <li class="navigation__menu--item">
                                         <a href="{{route('gallery')}}" class="navigation__menu--item__link">Gallery</a>
                                     </li>
+
+                                    <li class="navigation__menu--item">
+                                        <a href="{{route('contact')}}" class="navigation__menu--item__link">Contact</a>
+                                    </li>
                                 </ul>
                             </nav>
                         </div>
@@ -410,6 +414,10 @@
                                 <li class="slide has__children">
                                     <a class="slide__menu__item" href="{{ route('gallery') }}">Gallery
                                         <span class="toggle"></span>
+                                    </a>
+                                </li>
+                                <li class="slide">
+                                    <a class="slide__menu__item" href="{{ route('contact') }}">Contact
                                     </a>
                                 </li>
                                 <li class="slide has__children">
