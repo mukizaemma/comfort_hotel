@@ -117,8 +117,8 @@
                         @endforelse
                     </div>
                     @if($galleryImages->hasPages())
-                        <div class="d-flex justify-content-center mt-4">
-                            {{ $galleryImages->links() }}
+                        <div class="mt-4">
+                            {{ $galleryImages->links('vendor.pagination.bootstrap-5-custom') }}
                         </div>
                     @endif
                 </div>

@@ -75,7 +75,7 @@
         @if($reviews->hasPages())
         <div class="row mt-40">
             <div class="col-12">
-                {{ $reviews->links() }}
+                {{ $reviews->links('vendor.pagination.bootstrap-5-custom') }}
             </div>
         </div>
         @endif

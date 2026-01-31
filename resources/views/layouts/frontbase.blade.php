@@ -9,11 +9,11 @@
     <meta name="keywords" content="{{$setting->keywords ?? ''}}">
     <meta name="robots" content="index, follow">
     <!-- for open graph social media -->
-    <meta property="og:title" content="Hotel and Resort">
+    <meta property="og:title" content="{{$setting->company ?? ''}}">
     <meta property="og:description" content="{{$setting->company ?? ''}}">
     <!-- for twitter sharing -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Hotel and Resort">
+    <meta name="twitter:title" content="{{$setting->company ?? ''}}">
     <meta name="twitter:description" content="{{$setting->company ?? ''}}">
     <!-- favicon -->
     <link rel="icon" href="{{ asset('storage/images') . $setting->logo }}" type="image/x-icon">
@@ -83,6 +83,23 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+        }
+        /* Pagination: single row, normal-sized arrows, no overlap */
+        .gallery-pagination-wrapper .pagination {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            align-items: center;
+        }
+        .gallery-pagination-wrapper .page-item .page-link {
+            font-size: 0.875rem;
+            padding: 0.35rem 0.65rem;
+            min-width: auto;
+            text-align: center;
+        }
+        .gallery-pagination-wrapper .page-item.disabled .page-link,
+        .gallery-pagination-wrapper .page-item.active .page-link {
+            cursor: default;
         }
         /* Custom preloader: logo + animation (overrides template default) */
         .loader-wrapper {
