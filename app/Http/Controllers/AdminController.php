@@ -137,7 +137,7 @@ class AdminController extends Controller
     public function destroyBooking($id)
     {
         $booking = Booking::find($id); 
-        $booking->delete($id);
+        $booking->delete();
         return back()
             ->with('success', 'Booking deleted successfully');
     }

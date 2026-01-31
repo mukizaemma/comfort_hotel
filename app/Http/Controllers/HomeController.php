@@ -43,9 +43,9 @@ class HomeController extends Controller
         $setting = Setting::first();
         $slides = Slide::latest()->get();
         $about = About::first();
-        $rooms = Room::with('amenities')->where('status', 'Active')->latest()->take(6)->get();
+        $rooms = Room::with('amenities')->where('status', 'Active')->oldest()->take(6)->get();
         $gallery = Gallery::latest()->take(9)->get();
-        $homeFacilities = Facility::where('status', 'Active')->latest()->take(4)->get();
+        $homeFacilities = Facility::where('status', 'Active')->oldest()->take(4)->get();
         $services = Service::where('status', 'Active')->with('images')->latest()->take(4)->get();
         $blogs = Blog::where('status', 'Published')->latest()->take(3)->get() ?? collect();
         $reviews = Review::approved()->latest()->take(3)->get();
@@ -69,8 +69,8 @@ class HomeController extends Controller
         $facilities = Facility::where('status', 'Active')->oldest()->get();
         $setting = Setting::first();
         $about = About::first();
-        $rooms = Room::where('status', 'Active')->get(); // For booking form
-        $allRooms = Room::where('status', 'Active')->get(); // For booking form
+        $rooms = Room::where('status', 'Active')->oldest()->get(); // For booking form
+        $allRooms = Room::where('status', 'Active')->oldest()->get(); // For booking form
         $pageHero = PageHero::getBySlug('about');
         return view('frontend.about',[
             'facilities'=>$facilities,
@@ -83,10 +83,10 @@ class HomeController extends Controller
     }
 
     public function rooms(Request $request){
-        $rooms = Room::with(['amenities', 'images'])->where('status', 'Active')->latest()->get();
+        $rooms = Room::with(['amenities', 'images'])->where('status', 'Active')->oldest()->get();
         $setting = Setting::first();
         $about = About::first();
-        $facilities = Facility::where('status', 'Active')->get();
+        $facilities = Facility::where('status', 'Active')->oldest()->get();
         $pageHero = PageHero::getBySlug('rooms');
         
         return view('frontend.rooms', [
@@ -102,7 +102,7 @@ class HomeController extends Controller
         $room = Room::with(['amenities', 'images'])->where('slug', $slug)->firstOrFail();
         $amenities = $room->amenities;
         $images = $room->images;
-        $allRooms = Room::where('id', '!=', $room->id)->where('status', 'Active')->latest()->take(3)->get();
+        $allRooms = Room::where('id', '!=', $room->id)->where('status', 'Active')->oldest()->take(3)->get();
         $setting = Setting::first();
         $about = About::first();
         
@@ -133,8 +133,8 @@ class HomeController extends Controller
         $facility = Facility::with('images')->where('slug', $slug)->firstOrFail();
 
         $images = $facility->images;
-        $allFacilities = Facility::where('id','!=',$facility->id)->get();
-        $facilities = Facility::all();
+        $allFacilities = Facility::where('id','!=',$facility->id)->oldest()->get();
+        $facilities = Facility::oldest()->get();
         $setting = Setting::first();
         $about = About::first();
         $gallery = Gallery::oldest()->paginate(9);
@@ -154,7 +154,7 @@ class HomeController extends Controller
         $room = Room::with('amenities')->where('category', 'Apartment')->first();
         $amenities = $room->amenities ?? collect();
         $images = $room->images ?? collect();
-        $allRooms = Room::where('id', '!=', $room->id)->get();
+        $allRooms = Room::where('id', '!=', $room->id)->oldest()->get();
         $setting = Setting::first();
         $about = About::first();
         return view('frontend.apartment',[
@@ -172,7 +172,7 @@ class HomeController extends Controller
         $room = Room::with('amenities')->where('category', 'Kinigi')->first();
         $amenities = $room->amenities ?? collect();
         $images = $room->images ?? collect();
-        $allRooms = Room::where('id', '!=', $room->id)->get();
+        $allRooms = Room::where('id', '!=', $room->id)->oldest()->get();
         $about = About::first();
         $setting = Setting::first();
         return view('frontend.guesthouse',[
@@ -298,7 +298,7 @@ class HomeController extends Controller
     }
 
     public function terms(){
-        $rooms = Room::where('status', 'Active')->get();
+        $rooms = Room::where('status', 'Active')->oldest()->get();
         $setting = Setting::first();
         $about = About::first();
         $terms = \App\Models\TermsCondition::where('status', 'active')->first();

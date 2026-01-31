@@ -57,6 +57,20 @@
             flex-wrap: wrap;
             gap: 10px;
         }
+        /* Center icons inside footer social circles */
+        .footer__social__link .social-icon {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0;
+        }
+        .footer__social__link .social-icon i {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            font-size: 1.125rem;
+        }
         .copyright__wrapper {
             display: flex;
             flex-direction: column;

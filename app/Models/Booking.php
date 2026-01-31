@@ -44,6 +44,7 @@ class Booking extends Model
     protected $casts = [
         'checkin_date' => 'date',
         'checkout_date' => 'date',
+        'admin_replied_at' => 'datetime',
         'checked_in_at' => 'datetime',
         'checked_out_at' => 'datetime',
     ];

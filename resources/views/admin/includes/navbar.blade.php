@@ -64,24 +64,6 @@
                 <div class="dropdown-divider"></div>
                 @endif
                 
-                {{-- Billing & Finance Section --}}
-                @if($user->isSuperAdmin() || $user->isAccountant())
-                <h6 class="dropdown-header">Billing & Finance</h6>
-                <a href="{{ route('accountant.expenses') }}" class="dropdown-item">
-                    <i class="fa fa-money-bill-wave me-2"></i>Expenses
-                </a>
-                <a href="{{ route('accountant.sales') }}" class="dropdown-item">
-                    <i class="fa fa-chart-bar me-2"></i>Sales Reports
-                </a>
-                <a href="{{ route('accountant.invoices') }}" class="dropdown-item">
-                    <i class="fa fa-file-invoice me-2"></i>Invoices
-                </a>
-                <a href="{{ route('accountant.payments') }}" class="dropdown-item">
-                    <i class="fa fa-check-circle me-2"></i>Payments
-                </a>
-                <div class="dropdown-divider"></div>
-                @endif
-                
                 {{-- <a href="{{ route('aboutPage') }}" class="dropdown-item">
                     <i class="fa fa-user me-2"></i>My Profile
                 </a> --}}
