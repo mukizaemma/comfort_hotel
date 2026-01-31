@@ -7,6 +7,7 @@ use App\Models\Term;
 use App\Models\About;
 use App\Models\Aboutus;
 use App\Models\Setting;
+use App\Models\TermsCondition;
 use App\Models\Getinvolved;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,10 @@ class SettingsController extends Controller
             $data = Setting::first();
         }
 
-        return view('admin.setting', ['data'=>$data,'setting'=>$setting]);
+        $about = About::first();
+        $terms = TermsCondition::first();
+
+        return view('admin.setting', compact('data', 'setting', 'about', 'terms'));
     }
 
 
@@ -82,6 +86,21 @@ class SettingsController extends Controller
         else{
             abort(404);
         }
+    }
+
+    /**
+     * Update only the header SEO keywords (used in meta name="keywords").
+     */
+    public function updateKeywords(Request $request)
+    {
+        $request->validate(['keywords' => 'nullable|string']);
+        $setting = Setting::first();
+        if (!$setting) {
+            return redirect()->back()->with('error', 'No settings record found.');
+        }
+        $setting->keywords = $request->input('keywords', '');
+        $setting->save();
+        return redirect()->back()->with('success', 'Header keywords updated successfully.');
     }
 
     public function aboutPage(){
