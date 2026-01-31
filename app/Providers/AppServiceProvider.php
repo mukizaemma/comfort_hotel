@@ -25,8 +25,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share rooms and facilities globally for navigation
         View::composer('layouts.frontbase', function ($view) {
-            // $view->with('rooms', Room::where('status', 'Active')->latest()->take(10)->get());
-            // $view->with('facilities', Facility::where('status', 'Active')->latest()->take(10)->get());
+            $view->with('rooms', Room::where('status', 'Active')->oldest()->get());
+            $view->with('facilities', Facility::where('status', 'Active')->oldest()->get());
         });
     }
 }
