@@ -1,0 +1,531 @@
+@extends('layouts.adminBase')
+
+@section('content')
+@include('content-management.includes.sidebar')
+<div class="content">
+    @include('admin.includes.navbar')
+
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-light rounded h-100 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">Rooms Management</h4>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#roomModal" onclick="resetForm()">
+                    <i class="fa fa-plus me-2"></i>Add New Room
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Room Number</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Room Status</th>
+                            <th>Price</th>
+                            <th>Amenities</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($rooms as $room)
+                        <tr>
+                            <td>{{ $room->id }}</td>
+                            <td>{{ $room->room_number ?? 'N/A' }}</td>
+                            <td>{{ $room->title }}</td>
+                            <td><span class="badge bg-{{ $room->status == 'Active' ? 'success' : 'danger' }}">{{ $room->status }}</span></td>
+                            <td>
+                                <span class="badge bg-{{ $room->room_status == 'available' ? 'success' : ($room->room_status == 'occupied' ? 'danger' : ($room->room_status == 'reserved' ? 'warning' : 'secondary')) }}">
+                                    {{ ucfirst($room->room_status) }}
+                                </span>
+                            </td>
+                            <td>{{ number_format($room->price ?? 0) }} RWF</td>
+                            <td>{{ $room->amenities->count() }} amenities</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" onclick="viewRoom({{ $room->id }})">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="editRoom({{ $room->id }})">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRoom({{ $room->id }})">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Room Modal -->
+<div class="modal fade" id="roomModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roomModalTitle">Add New Room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="roomForm" enctype="multipart/form-data" novalidate>
+                <div class="modal-body">
+                    <div id="roomFormErrors" class="alert alert-danger" style="display: none;"></div>
+                    <input type="hidden" id="room_id" name="id">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="room_title" name="title" required>
+                            <div class="invalid-feedback">Please provide a title.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Room Number</label>
+                            <input type="text" class="form-control" id="room_number" name="room_number">
+                            <small class="text-muted">Optional</small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="room_description" name="description" rows="6" placeholder="Enter room description..."></textarea>
+                        <small class="text-muted">Use the rich text editor toolbar to format your room description with styles, colors, lists, and more</small>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-control" id="room_category" name="category">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Price</label>
+                            <input type="number" class="form-control" id="room_price" name="price">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Couple Price</label>
+                            <input type="number" class="form-control" id="room_couplePrice" name="couplePrice">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Max Occupancy</label>
+                            <input type="number" class="form-control" id="room_max_occupancy" name="max_occupancy" value="2">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Bed Count</label>
+                            <input type="number" class="form-control" id="room_bed_count" name="bed_count" value="1">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Bed Type</label>
+                            <input type="text" class="form-control" id="room_bed_type" name="bed_type">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Room Status <span class="text-danger">*</span></label>
+                            <select class="form-control" id="room_room_status" name="room_status" required>
+                                <option value="">Select Status</option>
+                                <option value="available">Available</option>
+                                <option value="occupied">Occupied</option>
+                                <option value="reserved">Reserved</option>
+                                <option value="maintenance">Maintenance</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a room status.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cover Image</label>
+                        <input type="file" class="form-control" id="room_cover_image" name="cover_image" accept="image/*">
+                        <small class="text-muted">Optional - Main image for the room</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Gallery Images (Multiple)</label>
+                        <input type="file" class="form-control" id="room_images" name="images[]" multiple accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amenities</label>
+                        <div class="row" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($amenities as $amenity)
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="amenities[]" value="{{ $amenity->id }}" id="amenity_{{ $amenity->id }}">
+                                    <label class="form-check-label" for="amenity_{{ $amenity->id }}">
+                                        {{ $amenity->title }}
+                                    </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status <span class="text-danger">*</span></label>
+                        <select class="form-control" id="room_status" name="status" required>
+                            <option value="">Select Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a status.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentRoomId = null;
+
+function resetForm() {
+    currentRoomId = null;
+    const form = document.getElementById('roomForm');
+    form.reset();
+    form.classList.remove('was-validated');
+    document.getElementById('room_id').value = '';
+    document.getElementById('roomModalTitle').textContent = 'Add New Room';
+    document.getElementById('roomFormErrors').style.display = 'none';
+    document.getElementById('roomFormErrors').innerHTML = '';
+    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    document.querySelectorAll('input[name="amenities[]"]').forEach(cb => cb.checked = false);
+    // Reset Summernote
+    if ($('#room_description').summernote('code') !== undefined) {
+        $('#room_description').summernote('code', '');
+    }
+}
+
+function editRoom(id) {
+    fetch(`{{ route('content-management.rooms.show', ':id') }}`.replace(':id', id))
+        .then(response => response.json())
+        .then(data => {
+            currentRoomId = id;
+            document.getElementById('room_id').value = data.id;
+            document.getElementById('room_title').value = data.title;
+            document.getElementById('room_number').value = data.room_number || '';
+            // Set Summernote content properly
+            $('#room_description').summernote('code', data.description || '');
+            document.getElementById('room_category').value = data.category || '';
+            document.getElementById('room_price').value = data.price || '';
+            document.getElementById('room_couplePrice').value = data.couplePrice || '';
+            document.getElementById('room_max_occupancy').value = data.max_occupancy || 2;
+            document.getElementById('room_bed_count').value = data.bed_count || 1;
+            document.getElementById('room_bed_type').value = data.bed_type || '';
+            document.getElementById('room_room_status').value = data.room_status || 'available';
+            document.getElementById('room_status').value = data.status;
+            
+            // Set amenities
+            document.querySelectorAll('input[name="amenities[]"]').forEach(cb => cb.checked = false);
+            if (data.amenities) {
+                data.amenities.forEach(amenity => {
+                    const checkbox = document.getElementById(`amenity_${amenity.id}`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+            
+            document.getElementById('roomModalTitle').textContent = 'Edit Room';
+            new bootstrap.Modal(document.getElementById('roomModal')).show();
+        });
+}
+
+function deleteRoom(id) {
+    if (confirm('Are you sure you want to delete this room?')) {
+        fetch(`{{ route('content-management.rooms.destroy', ':id') }}`.replace(':id', id), {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+}
+
+document.getElementById('roomForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const form = this;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    
+    if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        form.querySelectorAll(':invalid').forEach(field => {
+            field.classList.add('is-invalid');
+        });
+        return false;
+    }
+    
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+    
+    const formData = new FormData(form);
+    const url = currentRoomId 
+        ? `{{ route('content-management.rooms.update', ':id') }}`.replace(':id', currentRoomId)
+        : '{{ route('content-management.rooms.store') }}';
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        spinner.classList.add('d-none');
+        
+        if (data.success) {
+            // Close modal using jQuery (more reliable)
+            const modalElement = document.getElementById('roomModal');
+            if (modalElement && typeof jQuery !== 'undefined') {
+                jQuery(modalElement).modal('hide');
+            } else if (modalElement) {
+                // Fallback: manually hide
+                modalElement.classList.remove('show');
+                modalElement.style.display = 'none';
+                document.body.classList.remove('modal-open');
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) backdrop.remove();
+            }
+            setTimeout(() => location.reload(), 300);
+        } else {
+            const errorDiv = document.getElementById('roomFormErrors');
+            errorDiv.style.display = 'block';
+            let errorHtml = '<strong>Please fix the following errors:</strong><ul class="mb-0">';
+            
+            if (data.errors) {
+                Object.keys(data.errors).forEach(field => {
+                    errorHtml += `<li>${data.errors[field][0]}</li>`;
+                    const input = form.querySelector(`[name="${field}"]`);
+                    if (input) {
+                        input.classList.add('is-invalid');
+                    }
+                });
+            } else if (data.message) {
+                errorHtml += `<li>${data.message}</li>`;
+            }
+            errorHtml += '</ul>';
+            errorDiv.innerHTML = errorHtml;
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        spinner.classList.add('d-none');
+        const errorDiv = document.getElementById('roomFormErrors');
+        errorDiv.style.display = 'block';
+        errorDiv.innerHTML = `<strong>Error:</strong> ${error.message || 'An error occurred. Please try again.'}`;
+    });
+});
+
+function viewRoom(id) {
+    fetch(`{{ route('content-management.rooms.show', ':id') }}`.replace(':id', id))
+        .then(response => response.json())
+        .then(data => {
+            // Display room details
+            document.getElementById('viewRoomTitle').textContent = data.title;
+            document.getElementById('viewRoomDetails').innerHTML = `
+                <p><strong>Room Number:</strong> ${data.room_number || 'N/A'}</p>
+                <p><strong>Category:</strong> ${data.category || 'N/A'}</p>
+                <p><strong>Price:</strong> ${data.price ? new Intl.NumberFormat().format(data.price) + ' RWF' : 'N/A'}</p>
+                <p><strong>Status:</strong> <span class="badge bg-${data.status == 'Active' ? 'success' : 'danger'}">${data.status}</span></p>
+                <p><strong>Room Status:</strong> <span class="badge bg-${data.room_status == 'available' ? 'success' : (data.room_status == 'occupied' ? 'danger' : (data.room_status == 'reserved' ? 'warning' : 'secondary'))}">${data.room_status ? data.room_status.charAt(0).toUpperCase() + data.room_status.slice(1) : 'N/A'}</span></p>
+                <p><strong>Description:</strong> ${data.description || 'N/A'}</p>
+            `;
+            
+            // Display cover image
+            const coverImageHtml = data.cover_image 
+                ? `<img src="{{ asset('storage/') }}/${data.cover_image}" class="img-fluid rounded mb-3" style="max-height: 300px; width: 100%; object-fit: cover;">`
+                : '<p class="text-muted">No cover image</p>';
+            document.getElementById('viewRoomCoverImage').innerHTML = coverImageHtml;
+            
+            // Display gallery images
+            let galleryHtml = '';
+            if (data.images && data.images.length > 0) {
+                galleryHtml = '<div class="row g-2">';
+                data.images.forEach(image => {
+                    galleryHtml += `
+                        <div class="col-md-3 position-relative">
+                            <img src="{{ asset('storage/') }}/${image.image}" class="img-fluid rounded" style="height: 150px; width: 100%; object-fit: cover;">
+                            <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" onclick="deleteRoomImage(${image.id}, ${id})" style="z-index: 10;">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                galleryHtml += '</div>';
+            } else {
+                galleryHtml = '<p class="text-muted">No gallery images</p>';
+            }
+            document.getElementById('viewRoomGallery').innerHTML = galleryHtml;
+            
+            // Set room ID for adding images
+            document.getElementById('addRoomImagesRoomId').value = id;
+            
+            new bootstrap.Modal(document.getElementById('viewRoomModal')).show();
+        });
+}
+
+function deleteRoomImage(imageId, roomId) {
+    if (confirm('Are you sure you want to delete this image?')) {
+        fetch(`{{ route('content-management.rooms.delete-image', ':id') }}`.replace(':id', imageId), {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                viewRoom(roomId); // Refresh view
+            }
+        });
+    }
+}
+
+function addRoomImages() {
+    const form = document.getElementById('addRoomImagesForm');
+    const formData = new FormData(form);
+    const roomId = formData.get('room_id');
+    
+    fetch(`{{ route('content-management.rooms.add-images', ':id') }}`.replace(':id', roomId), {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('addRoomImagesForm').reset();
+            viewRoom(roomId); // Refresh view
+        }
+    });
+}
+
+// Initialize Summernote for description
+$(document).ready(function() {
+    // Initialize Summernote when modal is shown to ensure proper display
+    $('#roomModal').on('shown.bs.modal', function() {
+        if (!$('#room_description').next('.note-editor').length) {
+            $('#room_description').summernote({
+                height: 300,
+                minHeight: 200,
+                maxHeight: 500,
+                focus: false,
+                placeholder: 'Enter room description...',
+                dialogsInBody: true,
+                dialogsFade: true,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph', 'height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video', 'hr']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana', 'Gilda Display', 'Jost'],
+                fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48'],
+                callbacks: {
+                    onInit: function() {
+                        // Ensure proper styling
+                        $('.note-editor').css({
+                            'border': '1px solid #ced4da',
+                            'border-radius': '0.375rem'
+                        });
+                    }
+                }
+            });
+        }
+    });
+    
+    // Also initialize if modal is already open
+    if ($('#roomModal').hasClass('show')) {
+        $('#room_description').summernote({
+            height: 300,
+            minHeight: 200,
+            maxHeight: 500,
+            focus: false,
+            placeholder: 'Enter room description...',
+            dialogsInBody: true,
+            dialogsFade: true,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph', 'height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video', 'hr']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana', 'Gilda Display', 'Jost'],
+            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48'],
+            callbacks: {
+                onInit: function() {
+                    $('.note-editor').css({
+                        'border': '1px solid #ced4da',
+                        'border-radius': '0.375rem'
+                    });
+                }
+            }
+        });
+    }
+});
+</script>
+
+<!-- View Room Modal -->
+<div class="modal fade" id="viewRoomModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewRoomTitle">Room Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="viewRoomDetails"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Cover Image</h6>
+                        <div id="viewRoomCoverImage"></div>
+                    </div>
+                </div>
+                <hr>
+                <div class="mb-3">
+                    <h6>Gallery Images</h6>
+                    <div id="viewRoomGallery"></div>
+                </div>
+                <hr>
+                <div class="mb-3">
+                    <h6>Add More Gallery Images</h6>
+                    <form id="addRoomImagesForm" onsubmit="event.preventDefault(); addRoomImages();">
+                        <input type="hidden" id="addRoomImagesRoomId" name="room_id">
+                        <input type="file" class="form-control mb-2" name="images[]" multiple accept="image/*" required>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fa fa-plus"></i> Add Images
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
