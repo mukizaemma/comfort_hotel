@@ -220,6 +220,11 @@ class HomeController extends Controller
             ->where('image', '!=', '')
             ->latest()
             ->paginate(12);
+        $allGalleryImagesForLightbox = Gallery::where('media_type', 'image')
+            ->whereNotNull('image')
+            ->where('image', '!=', '')
+            ->latest()
+            ->get();
         $galleryVideos = Gallery::whereNotNull('youtube_link')
             ->where('youtube_link', '!=', '')
             ->latest()
@@ -229,6 +234,7 @@ class HomeController extends Controller
         $pageHero = PageHero::getBySlug('gallery');
         return view('frontend.gallery', [
             'galleryImages' => $galleryImages,
+            'allGalleryImagesForLightbox' => $allGalleryImagesForLightbox,
             'galleryVideos' => $galleryVideos,
             'setting' => $setting,
             'about' => $about,

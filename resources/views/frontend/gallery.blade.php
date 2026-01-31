@@ -1,7 +1,43 @@
 @extends('layouts.frontbase')
 
 @section('content')
-
+<style>
+    .gallery__link:hover img { opacity: 0.9; }
+    .gallery__link:focus { outline: 2px solid rgba(33, 118, 175, 0.5); outline-offset: 2px; }
+    /* Lightbox thumbnail carousel */
+    .gallery-lightbox-carousel-wrap {
+        background: rgba(0,0,0,0.3);
+        padding: 10px 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+    .gallery-lightbox-carousel-wrap::-webkit-scrollbar { height: 6px; }
+    .gallery-lightbox-carousel-wrap::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 3px; }
+    .gallery-lightbox-carousel-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
+    .gallery-lightbox-carousel {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        justify-content: flex-start;
+        min-height: 70px;
+    }
+    .gallery-lightbox-thumb {
+        flex: 0 0 auto;
+        width: 70px;
+        height: 70px;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        overflow: hidden;
+        padding: 0;
+        cursor: pointer;
+        background: #333;
+        transition: border-color 0.2s, opacity 0.2s;
+    }
+    .gallery-lightbox-thumb:hover { opacity: 0.9; }
+    .gallery-lightbox-thumb.active { border-color: #fff; box-shadow: 0 0 0 1px #fff; }
+    .gallery-lightbox-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+</style>
 @php
     $heroImage = '';
     $heroCaption = 'Gallery';
@@ -21,7 +57,7 @@
         $heroImage = asset('storage/images/about/default.jpg');
     }
     $galleryImageList = [];
-    foreach ($galleryImages as $img) {
+    foreach ($allGalleryImagesForLightbox ?? [] as $img) {
         $url = $img->image && (strpos($img->image, 'gallery/') === 0 || strpos($img->image, '/') !== false)
             ? asset('storage/' . $img->image)
             : asset('storage/images/gallery/' . $img->image);
@@ -62,11 +98,12 @@
                                 $imageUrl = $image->image && (strpos($image->image, 'gallery/') === 0 || strpos($image->image, '/') !== false)
                                     ? asset('storage/' . $image->image)
                                     : asset('storage/images/gallery/' . $image->image);
+                                $globalIndex = ($galleryImages->currentPage() - 1) * $galleryImages->perPage() + $index;
                             @endphp
                             <div class="col-lg-4 col-md-6">
                                 <div class="gallery__item h-100">
-                                    <a href="javascript:void(0)" class="gallery__link d-block rounded-2 overflow-hidden gallery-image-trigger" data-index="{{ $index }}" role="button">
-                                        <img class="img-fluid w-100" src="{{ $imageUrl }}" alt="{{ $image->caption ?? 'Gallery image' }}" loading="lazy" style="height: 260px; object-fit: cover;">
+                                    <a href="{{ $imageUrl }}" class="gallery__link d-block rounded-2 overflow-hidden gallery-image-trigger" data-index="{{ $globalIndex }}" role="button" style="cursor: pointer;" title="View full size">
+                                        <img class="img-fluid w-100" src="{{ $imageUrl }}" alt="{{ $image->caption ?? 'Gallery image' }}" loading="lazy" style="height: 260px; object-fit: cover; transition: opacity 0.2s;">
                                     </a>
                                     @if(!empty($image->caption))
                                         <p class="mt-2 small text-muted mb-0">{{ $image->caption }}</p>
@@ -117,22 +154,33 @@
         </div>
     </div>
 
-    <!-- Image Lightbox Modal: card with arrows and close -->
-    <div class="modal fade" id="imageLightboxModal" tabindex="-1" aria-labelledby="imageLightboxLabel" aria-hidden="true">
+    <!-- Image Lightbox Modal: clickable images, prev/next, close (button + backdrop + ESC) -->
+    <div class="modal fade" id="imageLightboxModal" tabindex="-1" aria-labelledby="imageLightboxLabel" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden">
-                <div class="modal-header border-0 py-2 px-3 bg-dark text-white d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-link text-white text-decoration-none p-0 me-auto gallery-lightbox-prev" aria-label="Previous"><i class="fas fa-chevron-left fa-2x"></i></button>
-                    <h5 class="modal-title mb-0 mx-2" id="imageLightboxLabel">Image</h5>
-                    <div class="d-flex align-items-center">
+                <div class="modal-header border-0 py-2 px-3 bg-dark text-white d-flex justify-content-between align-items-center flex-nowrap">
+                    <button type="button" class="btn btn-link text-white text-decoration-none p-2 gallery-lightbox-prev" aria-label="Previous image"><i class="fas fa-chevron-left fa-2x"></i></button>
+                    <h5 class="modal-title mb-0 mx-2 text-nowrap" id="imageLightboxLabel">Image</h5>
+                    <div class="d-flex align-items-center flex-nowrap">
                         <span class="gallery-lightbox-counter me-3 small"></span>
-                        <button type="button" class="btn btn-link text-white text-decoration-none p-0 gallery-lightbox-close" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+                        <button type="button" class="btn btn-link text-white text-decoration-none p-2 gallery-lightbox-close" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
                     </div>
-                    <button type="button" class="btn btn-link text-white text-decoration-none p-0 ms-auto gallery-lightbox-next" aria-label="Next"><i class="fas fa-chevron-right fa-2x"></i></button>
+                    <button type="button" class="btn btn-link text-white text-decoration-none p-2 gallery-lightbox-next" aria-label="Next image"><i class="fas fa-chevron-right fa-2x"></i></button>
                 </div>
-                <div class="modal-body p-0 bg-dark text-center">
-                    <img class="gallery-lightbox-image img-fluid" src="" alt="" style="max-height: 80vh; width: auto;">
+                <div class="modal-body p-0 bg-dark text-center position-relative">
+                    <img class="gallery-lightbox-image img-fluid" src="" alt="" style="max-height: 80vh; width: auto; display: block; margin: 0 auto;">
                     <p class="gallery-lightbox-caption text-white small p-2 mb-0"></p>
+                    @if(count($galleryImageList) > 0)
+                    <div class="gallery-lightbox-carousel-wrap">
+                        <div class="gallery-lightbox-carousel" id="galleryLightboxCarousel">
+                            @foreach($galleryImageList as $idx => $img)
+                            <button type="button" class="gallery-lightbox-thumb" data-index="{{ $idx }}" aria-label="View image {{ $idx + 1 }}">
+                                <img src="{{ $img['url'] }}" alt="{{ $img['caption'] ?? '' }}">
+                            </button>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -163,9 +211,7 @@
         var imageModalEl = document.getElementById('imageLightboxModal');
         var imageModal = imageModalEl ? new bootstrap.Modal(imageModalEl) : null;
 
-        function openImageLightbox(index) {
-            if (!galleryImages.length || !imageModal) return;
-            currentImageIndex = (index + galleryImages.length) % galleryImages.length;
+        function updateMainImage() {
             var item = galleryImages[currentImageIndex];
             var imgEl = document.querySelector('.gallery-lightbox-image');
             var capEl = document.querySelector('.gallery-lightbox-caption');
@@ -174,44 +220,84 @@
             if (imgEl) imgEl.alt = item.caption || 'Gallery image';
             if (capEl) capEl.textContent = item.caption || '';
             if (counterEl) counterEl.textContent = (currentImageIndex + 1) + ' / ' + galleryImages.length;
+        }
+
+        function updateCarouselActive() {
+            var carousel = document.getElementById('galleryLightboxCarousel');
+            if (!carousel) return;
+            var thumbs = carousel.querySelectorAll('.gallery-lightbox-thumb');
+            thumbs.forEach(function(t, i) {
+                if (i === currentImageIndex) {
+                    t.classList.add('active');
+                    t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    t.classList.remove('active');
+                }
+            });
+        }
+
+        function openImageLightbox(index) {
+            if (!galleryImages.length || !imageModal) return;
+            currentImageIndex = (index + galleryImages.length) % galleryImages.length;
+            updateMainImage();
             imageModal.show();
         }
 
         function showPrevImage() {
             currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-            var item = galleryImages[currentImageIndex];
-            var imgEl = document.querySelector('.gallery-lightbox-image');
-            var capEl = document.querySelector('.gallery-lightbox-caption');
-            var counterEl = document.querySelector('.gallery-lightbox-counter');
-            if (imgEl) imgEl.src = item.url;
-            if (capEl) capEl.textContent = item.caption || '';
-            if (counterEl) counterEl.textContent = (currentImageIndex + 1) + ' / ' + galleryImages.length;
+            updateMainImage();
+            updateCarouselActive();
         }
 
         function showNextImage() {
             currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-            var item = galleryImages[currentImageIndex];
-            var imgEl = document.querySelector('.gallery-lightbox-image');
-            var capEl = document.querySelector('.gallery-lightbox-caption');
-            var counterEl = document.querySelector('.gallery-lightbox-counter');
-            if (imgEl) imgEl.src = item.url;
-            if (capEl) capEl.textContent = item.caption || '';
-            if (counterEl) counterEl.textContent = (currentImageIndex + 1) + ' / ' + galleryImages.length;
+            updateMainImage();
+            updateCarouselActive();
         }
 
         document.querySelectorAll('.gallery-image-trigger').forEach(function(trigger) {
-            trigger.addEventListener('click', function() {
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
                 var index = parseInt(this.getAttribute('data-index'), 10);
-                openImageLightbox(index);
+                if (!isNaN(index)) openImageLightbox(index);
             });
         });
 
         var prevBtn = document.querySelector('.gallery-lightbox-prev');
         var nextBtn = document.querySelector('.gallery-lightbox-next');
         var closeBtn = document.querySelector('.gallery-lightbox-close');
-        if (prevBtn) prevBtn.addEventListener('click', showPrevImage);
-        if (nextBtn) nextBtn.addEventListener('click', showNextImage);
+        if (prevBtn) prevBtn.addEventListener('click', function(e) { e.preventDefault(); showPrevImage(); });
+        if (nextBtn) nextBtn.addEventListener('click', function(e) { e.preventDefault(); showNextImage(); });
         if (closeBtn) closeBtn.addEventListener('click', function() { if (imageModal) imageModal.hide(); });
+
+        /* Carousel: sync active thumbnail when lightbox is shown */
+        if (imageModalEl) {
+            imageModalEl.addEventListener('shown.bs.modal', function() {
+                updateCarouselActive();
+                document.addEventListener('keydown', galleryKeydown);
+            });
+            imageModalEl.addEventListener('hidden.bs.modal', function() {
+                document.removeEventListener('keydown', galleryKeydown);
+            });
+        }
+
+        /* Carousel thumbnail click: jump to that image */
+        var carouselEl = document.getElementById('galleryLightboxCarousel');
+        if (carouselEl) {
+            carouselEl.addEventListener('click', function(e) {
+                var thumb = e.target.closest('.gallery-lightbox-thumb');
+                if (!thumb) return;
+                var index = parseInt(thumb.getAttribute('data-index'), 10);
+                if (isNaN(index)) return;
+                currentImageIndex = index;
+                updateMainImage();
+                updateCarouselActive();
+            });
+        }
+        function galleryKeydown(e) {
+            if (e.key === 'ArrowLeft') { e.preventDefault(); showPrevImage(); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); showNextImage(); }
+        }
 
         document.querySelectorAll('.gallery-video-trigger').forEach(function(trigger) {
             trigger.addEventListener('click', function() {

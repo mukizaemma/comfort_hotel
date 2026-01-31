@@ -71,11 +71,84 @@
             line-height: 1;
             font-size: 1.125rem;
         }
+        /* Optical centering: Facebook and LinkedIn glyphs sit slightly left in FA */
+        .footer__social__link .social-icon .fa-facebook-f {
+            transform: translateX(1px);
+        }
+        .footer__social__link .social-icon .fa-linkedin-in {
+            transform: translateX(1px);
+        }
         .copyright__wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
+        }
+        /* Custom preloader: logo + animation (overrides template default) */
+        .loader-wrapper {
+            background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loader-wrapper .loader-section.section-left,
+        .loader-wrapper .loader-section.section-right {
+            display: none;
+        }
+        .loader-wrapper .loader {
+            width: auto;
+            height: auto;
+            top: auto;
+            left: auto;
+            transform: none;
+            position: relative;
+            border: none;
+        }
+        .loader-wrapper .loader:after {
+            display: none;
+        }
+        .preloader-inner {
+            text-align: center;
+            position: relative;
+            z-index: 1001;
+        }
+        .preloader-logo-wrap {
+            position: relative;
+            display: inline-block;
+        }
+        .preloader-logo-wrap:before {
+            content: '';
+            position: absolute;
+            inset: -12px;
+            border: 2px solid rgba(33, 118, 175, 0.2);
+            border-radius: 50%;
+            animation: preloader-ring 1.8s ease-in-out infinite;
+        }
+        .preloader-logo {
+            max-width: 160px;
+            width: 160px;
+            height: auto;
+            display: block;
+            animation: preloader-logo-in 1s ease-out forwards, preloader-logo-pulse 2.2s ease-in-out 1s infinite;
+            opacity: 0;
+        }
+        @keyframes preloader-logo-in {
+            0% { opacity: 0; transform: scale(0.88); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes preloader-logo-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.04); opacity: 0.95; }
+        }
+        @keyframes preloader-ring {
+            0%, 100% { transform: scale(0.95); opacity: 0.4; }
+            50% { transform: scale(1.08); opacity: 0.15; }
+        }
+        .loaded .loader-wrapper {
+            opacity: 0;
+            visibility: hidden;
+            transform: none;
+            transition: opacity 0.5s ease-out 0.15s, visibility 0.5s 0.15s;
         }
     </style>
 
@@ -582,14 +655,19 @@
     <!-- back to top end -->
 
 
-    <!-- THEME PRELOADER START -->
-    <div class="loader-wrapper">
+    <!-- Custom preloader: animated logo -->
+    <div class="loader-wrapper" id="site-preloader">
         <div class="loader">
+            <div class="preloader-inner">
+                <div class="preloader-logo-wrap">
+                    <img src="{{ asset('storage/images') . $setting->logo }}" alt="{{ $setting->company ?? 'Hotel' }}" class="preloader-logo">
+                </div>
+            </div>
         </div>
         <div class="loader-section section-left"></div>
         <div class="loader-section section-right"></div>
     </div>
-    <!-- THEME PRELOADER END -->
+    <!-- Preloader end -->
 
 
     <!-- plugin js -->
