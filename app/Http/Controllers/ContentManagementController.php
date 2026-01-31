@@ -286,26 +286,50 @@ class ContentManagementController extends Controller
 
     public function storeGallery(Request $request)
     {
+        if ($request->media_type === 'image') {
+            $files = $request->file('images');
+            if (empty($files)) {
+                $files = $request->hasFile('image') ? [$request->file('image')] : [];
+            }
+            if (!is_array($files)) {
+                $files = [$files];
+            }
+            $count = 0;
+            $caption = $request->input('caption');
+            $category = $request->input('category');
+            foreach ($files as $file) {
+                if (!$file || !$file->isValid()) {
+                    continue;
+                }
+                $gallery = new Gallery();
+                $gallery->media_type = 'image';
+                $gallery->category = $category;
+                $gallery->caption = $caption;
+                $gallery->image = $file->store('gallery', 'public');
+                $gallery->save();
+                $count++;
+            }
+            if ($count === 0) {
+                return redirect()->back()->with('error', 'Please select at least one image to upload.');
+            }
+            return redirect()->back()->with('success', $count === 1
+                ? 'Gallery image added successfully.'
+                : $count . ' gallery images added successfully.');
+        }
+
         $gallery = new Gallery();
         $gallery->media_type = $request->media_type;
         $gallery->category = $request->category;
         $gallery->caption = $request->caption;
 
-        if ($request->media_type === 'image') {
-            if ($request->hasFile('image')) {
-                $gallery->image = $request->file('image')->store('gallery', 'public');
-            }
-        } else {
-            // Video handling
-            if ($request->hasFile('video')) {
-                $gallery->video_path = $request->file('video')->store('gallery/videos', 'public');
-            }
-            if ($request->youtube_link) {
-                $gallery->youtube_link = $request->youtube_link;
-            }
-            if ($request->hasFile('thumbnail')) {
-                $gallery->thumbnail = $request->file('thumbnail')->store('gallery', 'public');
-            }
+        if ($request->hasFile('video')) {
+            $gallery->video_path = $request->file('video')->store('gallery/videos', 'public');
+        }
+        if ($request->youtube_link) {
+            $gallery->youtube_link = $request->youtube_link;
+        }
+        if ($request->hasFile('thumbnail')) {
+            $gallery->thumbnail = $request->file('thumbnail')->store('gallery', 'public');
         }
 
         $gallery->save();

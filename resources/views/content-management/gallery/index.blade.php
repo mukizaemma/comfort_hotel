@@ -7,20 +7,24 @@
 
     <div class="container-fluid pt-4 px-4">
         <div class="bg-light rounded h-100 p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
                 <h4 class="mb-0">Gallery Management</h4>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="resetForm()">
                     <i class="fa fa-plus me-2"></i>Add Gallery Item
                 </button>
             </div>
 
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+            @endif
+
             <div class="row">
                 @foreach($gallery as $item)
                 <div class="col-md-3 mb-4">
-                    <div class="card">
-                        @if($item->media_type == 'image')
+                    <div class="card h-100">
+                        @if($item->media_type == 'image' && !empty($item->image))
                             <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->caption }}">
-                        @else
+                        @elseif($item->media_type != 'image')
                             @if($item->youtube_link)
                                 <div class="card-img-top bg-dark text-white d-flex align-items-center justify-content-center" style="height: 200px;">
                                     <i class="fa fa-video fa-3x"></i>
@@ -48,7 +52,7 @@
     </div>
 </div>
 
-<!-- Gallery Modal -->
+<!-- Gallery Modal: add single/multiple images or video -->
 <div class="modal fade" id="galleryModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -62,14 +66,15 @@
                     <div class="mb-3">
                         <label class="form-label">Media Type *</label>
                         <select class="form-control" name="media_type" id="gallery_media_type" required onchange="toggleMediaFields()">
-                            <option value="image">Image</option>
+                            <option value="image">Images (single or multiple)</option>
                             <option value="video">Video</option>
                         </select>
                     </div>
                     <div id="imageFields">
                         <div class="mb-3">
-                            <label class="form-label">Image *</label>
-                            <input type="file" class="form-control" name="image" id="gallery_image" accept="image/*">
+                            <label class="form-label">Upload images *</label>
+                            <input type="file" class="form-control" name="images[]" id="gallery_image" accept="image/*" multiple>
+                            <small class="text-muted d-block mt-1">You can select multiple images at once; the same caption and category will apply to all.</small>
                         </div>
                     </div>
                     <div id="videoFields" style="display: none;">
@@ -115,7 +120,7 @@ function toggleMediaFields() {
     if (mediaType === 'image') {
         document.getElementById('imageFields').style.display = 'block';
         document.getElementById('videoFields').style.display = 'none';
-        document.getElementById('gallery_image').required = true;
+        document.getElementById('gallery_image').setAttribute('required', 'required');
         document.getElementById('gallery_video').required = false;
     } else {
         document.getElementById('imageFields').style.display = 'none';
