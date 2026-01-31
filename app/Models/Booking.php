@@ -23,8 +23,12 @@ class Booking extends Model
         'others',
         'rooms',
         'message',
+        'admin_reply',
+        'admin_replied_at',
         'status',
         'room_id',
+        'facility_id',
+        'reservation_type',
         'assigned_room_id',
         'total_amount',
         'paid_amount',
@@ -46,6 +50,10 @@ class Booking extends Model
 
     public function room(){
         return $this->belongsTo(Room::class, 'room_id');
+    }
+
+    public function facility(){
+        return $this->belongsTo(\App\Models\Facility::class, 'facility_id');
     }
 
     public function assignedRoom(){

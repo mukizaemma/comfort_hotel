@@ -83,54 +83,89 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Recent Orders</h6>
+                        <h6 class="mb-0">Room & Facility Bookings</h6>
                         <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search here" class="form-control" style="width: 200px;">
                     </div>
                     <div class="table-responsive">
                         <table class="table text-start align-middle table-bordered table-hover mb-0">
                             <thead>
                                 <tr class="text-dark">
-                                    <th scope="col"><input class="form-check-input" type="checkbox"></th>
                                     <th scope="col">Date</th>
+                                    <th scope="col">Type</th>
                                     <th scope="col">Names</th>
                                     <th scope="col">Email</th>
-                                    <th scope="col">Checkin Date</th>
-                                    <th scope="col">Checkout Date</th>
+                                    <th scope="col">Check-in</th>
+                                    <th scope="col">Check-out</th>
                                     <th scope="col">Adults</th>
-                                    <th scope="col">Rooms</th>
                                     <th scope="col">Message</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($bookings as $rs)
                                 <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>{{ $rs->created_at }}</td>
+                                    <td>{{ $rs->created_at ? $rs->created_at->format('Y-m-d H:i') : '' }}</td>
+                                    <td><span class="badge {{ ($rs->reservation_type ?? 'room') === 'facility' ? 'bg-info' : 'bg-primary' }}">{{ ucfirst($rs->reservation_type ?? 'room') }}</span></td>
                                     <td>{{ $rs->names ?? '' }}</td>
                                     <td>{{ $rs->email ?? '' }}</td>
-                                    <td>{{ $rs->checkin ?? '' }}</td>
-                                    <td>{{ $rs->checkout ?? '' }}</td>
+                                    <td>{{ $rs->checkin_date ? $rs->checkin_date->format('Y-m-d') : ($rs->checkin ?? '') }}</td>
+                                    <td>{{ $rs->checkout_date ? $rs->checkout_date->format('Y-m-d') : ($rs->checkout ?? '') }}</td>
                                     <td>{{ $rs->adults ?? '' }}</td>
-                                    <td>{{ $rs->rooms ?? '' }}</td>
-                                    <td>{!! Str::words($rs->message, 20, '...') !!}</td>
-
+                                    <td>{!! Str::words($rs->message ?? '', 15, '...') !!}</td>
+                                    <td><span class="badge bg-{{ $rs->status === 'confirmed' ? 'success' : ($rs->status === 'cancelled' ? 'danger' : 'warning') }}">{{ ucfirst($rs->status ?? 'pending') }}</span></td>
                                     <td>
-                                        <div class="btn-btn-group ">
-                                            <a type="button" href="{{ route('destroyBooking', $rs->id) }}"
-                                                class="btn btn-danger text-black" onclick="return confirm('Are you sure to delete this Record?')">Delete</a>
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#replyBookingModal" onclick="setReplyBookingId({{ $rs->id }})">Reply</button>
+                                            <a href="{{ route('destroyBooking', $rs->id) }}" class="btn btn-danger" onclick="return confirm('Are you sure to delete this booking?')">Delete</a>
                                         </div>
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
-                            {{-- $bookings->links('pagination::simple-bootstrap-4', ['style' => 'margin-top: 20px;']) --}}
-
-
                         </table>
                     </div>
                 </div>
             </div>
+
+            <!-- Reply to Booking Modal -->
+            <div class="modal fade" id="replyBookingModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Reply to Reservation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form id="replyBookingForm" method="POST" action="">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                                    <select name="status" class="form-control" required>
+                                        <option value="confirmed">Confirm</option>
+                                        <option value="cancelled">Reject</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Message to guest <span class="text-danger">*</span></label>
+                                    <textarea name="admin_reply" class="form-control" rows="4" required placeholder="This message will be sent to the guest's email."></textarea>
+                                    <small class="text-muted">The guest will be notified at their reservation email.</small>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Send reply</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <script>
+            function setReplyBookingId(id) {
+                var base = '{{ route("replyBooking", ["id" => "__ID__"]) }}';
+                document.getElementById('replyBookingForm').action = base.replace('__ID__', id);
+            }
+            </script>
 
             <script>
                 function searchTable() {

@@ -127,21 +127,17 @@
 </div>
 <!-- Hotel Rooms End -->
 
-    <!-- video section start -->
+    <!-- quote section (formerly video section) -->
     <div class="rts__section pb-120 video video__full" style="margin: 0; padding: 0; width: 100%; overflow: hidden; position: relative;">
         <div style="width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; padding: 0;">
             <div class="video__area position-relative wow fadeInUp" style="width: 100%; margin: 0; padding: 0;">
                 <div class="video__area__image jara-mask-2 jarallax rounded-0" style="width: 100%; padding: 0; border-radius: 0; margin: 0;"> 
                     @php
-                        // Handle both storage formats
                         $image2Path = '';
                         if ($about && $about->image2) {
-                            // New format from ContentManagementController: 'abouts/filename.jpg'
                             if (strpos($about->image2, '/') !== false || strpos($about->image2, 'abouts') === 0) {
                                 $image2Path = asset('storage/' . $about->image2);
-                            } 
-                            // Old format from SettingsController: just 'filename.jpg'
-                            else {
+                            } else {
                                 $image2Path = asset('storage/images/about/' . $about->image2);
                             }
                         } else {
@@ -150,27 +146,17 @@
                     @endphp
                     <img class="radius-none jarallax-img" src="{{ $image2Path }}" alt="Hotel Quote" loading="lazy" onerror="this.src='{{ asset('storage/images/about/default.jpg') }}'" style="width: 100%; height: 100%; object-fit: cover; display: block; margin: 0; padding: 0;">
                 </div>
-                <div class="video--spinner__wrapper" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">
-                    <div class="rts__circle">
-                        <svg class="spinner" viewBox="0 0 100 100">
-                            <defs>
-                                <path id="circle-2" d="M50,50 m-37,0a37,37 0 1,1 74,0a37,37 0 1,1 -74,0"></path>
-                            </defs>
-                            <text>
-                                <textPath xlink:href="#circle-2">Watch Now * Watch Now * Watch Full Video *</textPath>
-                            </text>
-                        </svg>
-                        <div class="rts__circle--icon">
-                            <a href="https://www.youtube.com/watch?v=qOwxqRGHy5Q" class="video-play">
-                                <i class="flaticon-play"></i>
-                            </a>
-                        </div>
-                    </div>
+                <div class="video--spinner__wrapper" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; width: 80%; max-width: 80%; text-align: center;">
+                    <blockquote class="home-quote-block" style="margin: 0; padding: 0; width: 100%; max-width: 100%; border: none; background: transparent;">
+                        <p class="home-quote-text" style="margin: 0; font-size: clamp(1.5rem, 3.5vw, 2.5rem); font-weight: 500; line-height: 1.4; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); font-style: italic; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            &ldquo;{{ $about->vision ?? 'Where luxury meets comfort, and every stay becomes a cherished memory.' }}&rdquo;
+                        </p>
+                    </blockquote>
                 </div>
             </div>
         </div>
     </div>
-    <!-- video section end -->
+    <!-- quote section end -->
 
 <!-- Facilities Section -->
 <div class="rts__section section__padding">

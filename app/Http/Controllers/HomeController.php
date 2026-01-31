@@ -215,16 +215,25 @@ class HomeController extends Controller
     }
 
     public function gallery(){
-        $gallery = Gallery::latest()->paginate(20);
+        $galleryImages = Gallery::where('media_type', 'image')
+            ->whereNotNull('image')
+            ->where('image', '!=', '')
+            ->latest()
+            ->paginate(12);
+        $galleryVideos = Gallery::whereNotNull('youtube_link')
+            ->where('youtube_link', '!=', '')
+            ->latest()
+            ->get();
         $setting = Setting::first();
         $about = About::first();
         $pageHero = PageHero::getBySlug('gallery');
         return view('frontend.gallery', [
-            'gallery'=>$gallery,
-            'setting'=>$setting,
-            'about'=>$about,
-            'pageHero'=>$pageHero,
-    ]);
+            'galleryImages' => $galleryImages,
+            'galleryVideos' => $galleryVideos,
+            'setting' => $setting,
+            'about' => $about,
+            'pageHero' => $pageHero,
+        ]);
     }
 
     public function contact(){
@@ -304,8 +313,8 @@ class HomeController extends Controller
     }
 
     public function bookNow(Request $request){
-        $request->validate([
-            'room_id' => 'required|exists:rooms,id',
+        $isFacility = $request->filled('facility_id');
+        $rules = [
             'names' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
@@ -314,8 +323,14 @@ class HomeController extends Controller
             'adults' => 'required|integer|min:1',
             'children' => 'nullable|integer|min:0',
             'message' => 'nullable|string|max:1000',
-        ]);
-    
+        ];
+        if ($isFacility) {
+            $rules['facility_id'] = 'required|exists:facilities,id';
+        } else {
+            $rules['room_id'] = 'required|exists:rooms,id';
+        }
+        $request->validate($rules);
+
         $booking = new Booking();
         $booking->names = $request->input('names');
         $booking->email = $request->input('email');
@@ -325,29 +340,32 @@ class HomeController extends Controller
         $booking->message = $request->input('message');
         $booking->adults = $request->input('adults');
         $booking->children = $request->input('children') ?? 0;
-        $booking->room_id = $request->input('room_id');
         $booking->status = 'pending';
         $booking->booking_type = 'online';
-
-        // Calculate total amount based on room price and nights
-        $room = Room::findOrFail($request->input('room_id'));
-        $checkin = new \DateTime($request->input('checkin'));
-        $checkout = new \DateTime($request->input('checkout'));
-        $nights = $checkin->diff($checkout)->days;
-        $booking->total_amount = ($room->price ?? 0) * $nights;
         $booking->paid_amount = 0;
-        $booking->balance_amount = $booking->total_amount;
+
+        if ($isFacility) {
+            $booking->facility_id = $request->input('facility_id');
+            $booking->reservation_type = 'facility';
+            $booking->room_id = null;
+            $booking->total_amount = 0;
+            $booking->balance_amount = 0;
+        } else {
+            $booking->room_id = $request->input('room_id');
+            $booking->reservation_type = 'room';
+            $booking->facility_id = null;
+            $room = Room::findOrFail($request->input('room_id'));
+            $checkin = new \DateTime($request->input('checkin'));
+            $checkout = new \DateTime($request->input('checkout'));
+            $nights = $checkin->diff($checkout)->days;
+            $booking->total_amount = ($room->price ?? 0) * $nights;
+            $booking->balance_amount = $booking->total_amount;
+        }
 
         if ($booking->save()) {
-            //$userEmail = $booking->email; 
-            //Mail::to('info@iremetech.com')
-              //  ->cc($userEmail)
-                //->send(new BookingNotofication($booking));
-
-            return redirect()->back()->with('success', 'Your reservation has been submitted successfully. We will get back to you soon');
-        } else {
-            return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
+            return redirect()->back()->with('success', 'Your reservation has been submitted successfully. We will get back to you soon.');
         }
+        return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
     }
 
     public function tours(){

@@ -141,6 +141,43 @@ class AdminController extends Controller
         return back()
             ->with('success', 'Booking deleted successfully');
     }
+
+    public function replyBooking(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:confirmed,cancelled',
+            'admin_reply' => 'required|string|max:2000',
+        ]);
+        $booking = Booking::with(['room', 'facility'])->findOrFail($id);
+        $booking->status = $request->status;
+        $booking->admin_reply = $request->admin_reply;
+        $booking->admin_replied_at = now();
+        $booking->save();
+
+        $guestEmail = $booking->email;
+        if ($guestEmail) {
+            $itemName = $booking->reservation_type === 'facility' && $booking->facility
+                ? $booking->facility->title
+                : ($booking->room ? $booking->room->title : 'Room');
+            $statusLabel = $request->status === 'confirmed' ? 'Confirmed' : 'Cancelled';
+            $subject = 'Reservation ' . $statusLabel . ' - ' . $itemName;
+            $body = "Hello " . $booking->names . ",\n\n";
+            $body .= "Your reservation for " . $itemName . " has been " . strtolower($statusLabel) . ".\n\n";
+            $body .= "Message from the hotel:\n" . $request->admin_reply . "\n\n";
+            $body .= "Check-in: " . ($booking->checkin_date ? $booking->checkin_date->format('Y-m-d') : '') . "\n";
+            $body .= "Check-out: " . ($booking->checkout_date ? $booking->checkout_date->format('Y-m-d') : '') . "\n\n";
+            $body .= "Thank you.";
+            try {
+                Mail::raw($body, function ($message) use ($guestEmail, $subject) {
+                    $message->to($guestEmail)->subject($subject);
+                });
+            } catch (\Exception $e) {
+                return back()->with('error', 'Reply saved but email could not be sent: ' . $e->getMessage());
+            }
+        }
+        return back()->with('success', 'Reply sent and guest notified by email.');
+    }
+
     public function getMessages(){
         $messages = Message::latest()->paginate(10);
         return view('admin.posts.messages',[

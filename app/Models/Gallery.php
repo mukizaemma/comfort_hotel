@@ -19,4 +19,18 @@ class Gallery extends Model
             'youtube_link',
             'thumbnail',
         ];
+
+    /**
+     * Get YouTube video ID from youtube_link for embedding.
+     */
+    public function getYoutubeVideoIdAttribute(): ?string
+    {
+        if (empty($this->youtube_link)) {
+            return null;
+        }
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $this->youtube_link, $m)) {
+            return $m[1];
+        }
+        return null;
+    }
 }

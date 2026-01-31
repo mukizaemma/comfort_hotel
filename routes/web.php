@@ -170,6 +170,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/Subscribers', [App\Http\Controllers\AdminController::class, 'subscribers'])->name('subscribers');
     Route::get('/Subscribers/{id}', [App\Http\Controllers\AdminController::class, 'destroySub'])->name('destroySub');
     Route::get('/delete-booking/{id}', [App\Http\Controllers\AdminController::class, 'destroyBooking'])->name('destroyBooking');
+    Route::post('/reply-booking/{id}', [App\Http\Controllers\AdminController::class, 'replyBooking'])->name('replyBooking');
 
     Route::get('/getMessages', [App\Http\Controllers\AdminController::class, 'getMessages'])->name('getMessages');
     Route::get('/deleteMessages/{id}', [App\Http\Controllers\AdminController::class, 'deleteMessages'])->name('deleteMessages');

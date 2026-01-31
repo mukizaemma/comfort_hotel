@@ -37,97 +37,38 @@
     </div>
     <!-- page header end -->
 
-    <!-- single rooms -->
+    <!-- rooms grid: image, title, price/Night, short description, View details (no booking form on listing) -->
     <div class="rts__section section__padding">
         <div class="container">
-            <div class="row g-30 main__content sticky-wrap">
-                <div class="col-xl-8 col-lg-7 order-2 order-lg-1">
-                    <!-- row -->
-                    <div class="row g-30">
-                        <!-- single room -->
-                            @foreach ($rooms as $room)
-                            <div class="col-xl-6 col-lg-12 col-md-6">
-                                <div class="room__card vh-100">
-                                    <div class="room__card__top">
-                                        <div class="room__card__image">
-                                            <a href="{{ route('room',['slug'=>$room->slug]) }}">
-                                                <img src="{{ asset('storage/' . ($room->cover_image ?? 'rooms/default.jpg')) }}" width="420" height="310" alt="{{ $room->title ?? 'room card' }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="room__card__meta">
-                                        <a href="{{ route('room',['slug'=>$room->slug]) }}" class="room__card__title h5">{{ $room->title }}</a>
-                                        <div class="room__card__meta__info">
-                                            <p class="font-sm">{!! Str::words($room->description, 30, '...') !!}</p>
-                                        </div>
-                                        <div class="room__price__tag">
-                                            <span class="h6 d-block">{{ $room->price }}{{ $room->price > 200 ? '/Month' : '/Night' }}</span>
-                                        </div>
-                                        <a href="{{ route('room',['slug'=>$room->slug]) }}" class="room__card__link">Discover More</a>
-
-                                    </div>
-                                </div>
+            <div class="row g-4">
+                @foreach ($rooms as $room)
+                <div class="col-lg-4 col-md-6">
+                    <div class="room__card h-100 d-flex flex-column rounded-3 overflow-hidden shadow-sm" style="background: #fff; border: 1px solid #eee;">
+                        <div class="room__card__top flex-grow-0">
+                            <div class="room__card__image">
+                                <a href="{{ route('room', ['slug' => $room->slug]) }}">
+                                    <img src="{{ asset('storage/' . ($room->cover_image ?? 'rooms/default.jpg')) }}" width="420" height="280" alt="{{ $room->title ?? 'Room' }}" loading="lazy" style="width: 100%; height: 280px; object-fit: cover;">
+                                </a>
                             </div>
-                            @endforeach
-                        <!-- single room end -->
-
+                        </div>
+                        <div class="room__card__meta p-4 d-flex flex-column flex-grow-1">
+                            <a href="{{ route('room', ['slug' => $room->slug]) }}" class="room__card__title h5 mb-2 text-dark text-decoration-none">{{ $room->title }}</a>
+                            <div class="room__price__tag mb-2">
+                                <span class="h5 text-primary">${{ number_format($room->price ?? 0, 0) }}/Night</span>
+                            </div>
+                            <div class="room__card__meta__info mb-3 flex-grow-1">
+                                <p class="font-sm text-muted mb-0">{!! Str::words(strip_tags($room->description ?? ''), 20, '...') !!}</p>
+                            </div>
+                            <a href="{{ route('room', ['slug' => $room->slug]) }}#booking" class="theme-btn btn-style fill align-self-start">
+                                <span>View details &amp; Book</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-5 order-1 order-lg-2 mb-5 mb-lg-0 sticky-item">
-                    <div class="rts__booking__form has__background no__shadow">
-                        <form action="#" method="post" class="advance__search">
-                            <h5>Book Your Stay</h5>
-                            <div class="advance__search__wrapper">
-                                <!-- single input -->
-                                <div class="query__input wow fadeInUp">
-                                    <label for="check__in" class="query__label">Check In</label>
-                                    <div class="query__input__position">
-                                        <input type="text" id="check__in" name="check__in" placeholder="15 Jun 2024" required>
-                                        <div class="query__input__icon">
-                                            <i class="flaticon-calendar"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- single input end -->
-
-                                <!-- single input -->
-                                <div class="query__input wow fadeInUp" data-wow-delay=".3s">
-                                    <label for="check__out" class="query__label">Check Out</label>
-                                    <div class="query__input__position">
-                                        <input type="text" id="check__out" name="check__out" placeholder="15 May 2024" required>
-                                        <div class="query__input__icon">
-                                            <i class="flaticon-calendar"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- single input end -->
-
-                                <!-- single input -->
-                                <div class="query__input wow fadeInUp" data-wow-delay=".4s">
-                                    <label for="adult" class="query__label">Adult</label>
-                                    <input type="text" name="child" id="child" class="form-input">
-                                </div>
-                                <!-- single input end -->
-
-                                <!-- single input -->
-                                <div class="query__input wow fadeInUp" data-wow-delay=".5s">
-                                    <label for="child" class="query__label">Child</label>
-                                        <input type="text" name="child" id="child" class="form-input">
-                                </div>
-                                <!-- single input end -->
-                                <!-- submit button -->
-                                <button class="theme-btn btn-style fill no-border search__btn wow fadeInUp" data-wow-delay=".6s">
-                                    <span><i class="flaticon-search-1"></i> Search</span>
-                                </button>
-                                <!-- submit button end -->
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
-
 
 @include('frontend.includes.rooms')
 
