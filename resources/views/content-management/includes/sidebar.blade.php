@@ -43,6 +43,9 @@ $currentRoute = request()->route()->getName();
             <a href="{{ route('content-management.rooms') }}" class="nav-item nav-link {{ str_contains($currentRoute, 'content-management.rooms') ? 'active' : '' }}">
                 <i class="fas fa-bed me-2"></i>Rooms
             </a>
+            <a href="{{ route('content-management.reservations') }}" class="nav-item nav-link {{ str_contains($currentRoute, 'content-management.reservations') ? 'active' : '' }}">
+                <i class="fas fa-calendar-check me-2"></i>Reservations
+            </a>
             <a href="{{ route('content-management.facilities') }}" class="nav-item nav-link {{ str_contains($currentRoute, 'content-management.facilities') ? 'active' : '' }}">
                 <i class="fas fa-building me-2"></i>Facilities
             </a>

@@ -91,6 +91,11 @@ Route::middleware(['auth', 'admin'])->prefix('content-management')->name('conten
     // Page Heroes
     Route::get('/page-heroes', [App\Http\Controllers\ContentManagementController::class, 'pageHeroes'])->name('page-heroes');
     Route::post('/page-heroes/{id}/update', [App\Http\Controllers\ContentManagementController::class, 'updatePageHero'])->name('page-heroes.update');
+    
+    // Reservations (rooms + facilities, via tabs)
+    Route::get('/reservations', [App\Http\Controllers\ContentManagementController::class, 'reservations'])->name('reservations');
+    Route::get('/reservations/{id}', [App\Http\Controllers\ContentManagementController::class, 'showReservation'])->name('reservations.show');
+    Route::post('/reservations/{id}/reply', [App\Http\Controllers\ContentManagementController::class, 'replyReservation'])->name('reservations.reply');
 });
 
 // ============================================

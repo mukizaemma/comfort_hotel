@@ -18,6 +18,9 @@ use App\Models\ServiceImage;
 use App\Models\Roomimage;
 use App\Models\Facilityimage;
 use App\Models\PageHero;
+use App\Models\Booking;
+use App\Models\BookingTrash;
+use Illuminate\Support\Facades\Mail;
 
 class ContentManagementController extends Controller
 {
@@ -31,6 +34,117 @@ class ContentManagementController extends Controller
         ];
         
         return view('content-management.dashboard', compact('stats'));
+    }
+
+    /**
+     * Reservations overview for Content Manager (rooms vs facilities).
+     */
+    public function reservations()
+    {
+        $roomReservations = Booking::where('reservation_type', 'room')
+            ->with(['room', 'assignedRoom'])
+            ->latest()
+            ->take(200)
+            ->get();
+
+        $facilityReservations = Booking::where('reservation_type', 'facility')
+            ->with('facility')
+            ->latest()
+            ->take(200)
+            ->get();
+
+        return view('content-management.reservations.index', compact('roomReservations', 'facilityReservations'));
+    }
+
+    /**
+     * Fetch single reservation (for modal view).
+     */
+    public function showReservation($id)
+    {
+        $booking = Booking::with(['room', 'assignedRoom', 'facility', 'tourActivity'])->findOrFail($id);
+        return response()->json($booking);
+    }
+
+    /**
+     * Reply to reservation with status & custom message.
+     * Status options: confirmed, rejected, full-booked, scam.
+     * Rejected or scam bookings are moved to trash table.
+     */
+    public function replyReservation(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:confirmed,rejected,full-booked,scam',
+            'admin_reply' => 'required|string|max:2000',
+        ]);
+
+        $booking = Booking::with(['room', 'facility', 'tourActivity'])->findOrFail($id);
+
+        $booking->status = $request->status;
+        $booking->admin_reply = $request->admin_reply;
+        $booking->admin_replied_at = now();
+
+        // Prepare email if guest has an email
+        $guestEmail = $booking->email;
+        if ($guestEmail) {
+            $itemName = 'Reservation';
+            if ($booking->reservation_type === 'facility' && $booking->facility) {
+                $itemName = $booking->facility->title;
+            } elseif ($booking->reservation_type === 'tour_activity' && $booking->tourActivity) {
+                $itemName = $booking->tourActivity->title;
+            } elseif ($booking->room) {
+                $itemName = $booking->room->title;
+            }
+
+            $statusLabelMap = [
+                'confirmed'   => 'Confirmed',
+                'rejected'    => 'Rejected',
+                'full-booked' => 'Full-booked',
+                'scam'        => 'Marked as Scam',
+            ];
+            $statusLabel = $statusLabelMap[$request->status] ?? ucfirst($request->status);
+
+            $subject = 'Reservation ' . $statusLabel . ' - ' . $itemName;
+            $body = "Hello " . $booking->names . ",\n\n";
+            $body .= "Your reservation for " . $itemName . " has been " . strtolower($statusLabel) . ".\n\n";
+            $body .= "Message from the hotel:\n" . $request->admin_reply . "\n\n";
+
+            if ($booking->checkin_date || $booking->checkout_date) {
+                $body .= "Check-in: " . ($booking->checkin_date ? $booking->checkin_date->format('Y-m-d') : '') . "\n";
+                $body .= "Check-out: " . ($booking->checkout_date ? $booking->checkout_date->format('Y-m-d') : '') . "\n\n";
+            }
+
+            $body .= "Thank you.";
+
+            try {
+                Mail::raw($body, function ($message) use ($guestEmail, $subject) {
+                    $message->to($guestEmail)->subject($subject);
+                });
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Reply saved but email could not be sent: ' . $e->getMessage(),
+                ], 500);
+            }
+        }
+
+        // Move to trash if rejected or scam
+        if (in_array($request->status, ['rejected', 'scam'])) {
+            BookingTrash::create([
+                'original_booking_id' => $booking->id,
+                'names' => $booking->names,
+                'email' => $booking->email,
+                'phone' => $booking->phone,
+                'reservation_type' => $booking->reservation_type,
+                'status' => $booking->status,
+                'payload' => $booking->toArray(),
+            ]);
+
+            $booking->delete();
+        } else {
+            $booking->save();
+        }
+
+        return response()->json(['success' => true]);
     }
 
     // Hotel Contacts Management

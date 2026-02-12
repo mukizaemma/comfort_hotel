@@ -350,34 +350,50 @@ class HomeController extends Controller
     public function bookNow(Request $request){
         $isFacility = $request->filled('facility_id');
         $isTourActivity = $request->filled('tour_activity_id');
+
         $rules = [
             'names' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
-            'checkin' => 'required|date|after_or_equal:today',
-            'checkout' => 'required|date|after:checkin',
-            'adults' => 'required|integer|min:1',
-            'children' => 'nullable|integer|min:0',
             'message' => 'nullable|string|max:1000',
         ];
-        if ($isTourActivity) {
-            $rules['tour_activity_id'] = 'required|exists:tour_activities,id';
-        } elseif ($isFacility) {
+
+        if ($isFacility) {
             $rules['facility_id'] = 'required|exists:facilities,id';
+            $rules['reservation_date'] = 'required|date|after_or_equal:today';
+            $rules['guests'] = 'required|integer|min:1';
         } else {
-            $rules['room_id'] = 'required|exists:rooms,id';
+            $rules['checkin'] = 'required|date|after_or_equal:today';
+            $rules['checkout'] = 'required|date|after:checkin';
+            $rules['adults'] = 'required|integer|min:1';
+            $rules['children'] = 'nullable|integer|min:0';
+
+            if ($isTourActivity) {
+                $rules['tour_activity_id'] = 'required|exists:tour_activities,id';
+            } else {
+                $rules['room_id'] = 'required|exists:rooms,id';
+            }
         }
+
         $request->validate($rules);
 
         $booking = new Booking();
         $booking->names = $request->input('names');
         $booking->email = $request->input('email');
         $booking->phone = $request->input('phone');
-        $booking->checkin_date = $request->input('checkin');
-        $booking->checkout_date = $request->input('checkout');
         $booking->message = $request->input('message');
-        $booking->adults = $request->input('adults');
-        $booking->children = $request->input('children') ?? 0;
+
+        if ($isFacility) {
+            $booking->checkin_date = $request->input('reservation_date');
+            $booking->checkout_date = $request->input('reservation_date');
+            $booking->adults = $request->input('guests');
+            $booking->children = 0;
+        } else {
+            $booking->checkin_date = $request->input('checkin');
+            $booking->checkout_date = $request->input('checkout');
+            $booking->adults = $request->input('adults');
+            $booking->children = $request->input('children') ?? 0;
+        }
         $booking->status = 'pending';
         $booking->booking_type = 'online';
         $booking->paid_amount = 0;

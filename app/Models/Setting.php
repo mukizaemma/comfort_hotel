@@ -16,6 +16,9 @@ class Setting extends Model
         'address',
         'email',
         'phone',
+        'reception_phone',
+        'manager_phone',
+        'restaurant_phone',
         'logo',
         'deliveryInfo',
         'facebook',
@@ -23,6 +26,7 @@ class Setting extends Model
         'instagram',
         'youtube',
         'linkedin',
+        'linktree',
         'quote',
         'google_map_embed',
     ];

@@ -42,6 +42,9 @@ class SettingsController extends Controller
         $data->company = $request->input('company');
         $data->address = $request->input('address');
         $data->phone = $request->input('phone');
+        $data->reception_phone = $request->input('reception_phone');
+        $data->manager_phone = $request->input('manager_phone');
+        $data->restaurant_phone = $request->input('restaurant_phone');
         $data->email = $request->input('email');
         $data->facebook = $request->input('facebook');
         $data->instagram = $request->input('instagram');

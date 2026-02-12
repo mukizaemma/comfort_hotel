@@ -23,7 +23,13 @@
                 <div class="col-lg-12">
                     <div class="page__hero__content">
                         <h1 class="wow fadeInUp">{{ $facility->title ?? '' }}</h1>
-                        <p class="wow fadeInUp font-sm">A step up from the standard room, often with better views, more space, and additional amenities.</p>
+                        <p class="wow fadeInUp font-sm">
+                            @if(!empty($facility->description))
+                                {{ \Illuminate\Support\Str::words(strip_tags($facility->description), 22, '...') }}
+                            @else
+                                A step up from the standard room, often with better views, more space, and additional amenities.
+                            @endif
+                        </p>
                     </div>
                 </div>
             </div>
@@ -35,7 +41,8 @@
     <div class="rts__section section__padding">
         <div class="container">
             <div class="row g-5 sticky-wrap">
-                <div class="col-12">
+                <!-- Left column: gallery + title + description -->
+                <div class="col-lg-7">
                     <div class="room__details">
 
                         <div class="room__feature mb-10">
@@ -95,47 +102,36 @@
                         </div>
                         <p>{!! $facility->description !!}</p>
                         <div class="room__image__group row row-cols-md-2 row-cols-sm-1 mt-30 mb-50 gap-4 gap-md-0">
-
                         </div>
 
                     </div>
                 </div>
-            </div>
 
-            <!-- Facility Booking Form Section -->
-            <div class="row mt-50" id="booking">
-                <div class="col-lg-8 mx-auto">
-                    <div class="rts__booking__form has__background" style="padding: 40px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <!-- Right column: booking form -->
+                <div class="col-lg-5" id="booking">
+                    <div class="rts__booking__form has__background" style="padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                         <h3 class="mb-30 text-center">Book This Facility</h3>
                         <form action="{{ route('bookNow') }}" method="POST" id="facilityBookingForm">
                             @csrf
                             <input type="hidden" name="facility_id" value="{{ $facility->id }}">
                             <div class="row g-20">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Check In <span class="text-danger">*</span></label>
-                                    <input type="date" name="checkin" class="form-control" required min="{{ date('Y-m-d') }}">
+                                    <label class="form-label">Date <span class="text-danger">*</span></label>
+                                    <input type="date" name="reservation_date" class="form-control" required min="{{ date('Y-m-d') }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Check Out <span class="text-danger">*</span></label>
-                                    <input type="date" name="checkout" class="form-control" required min="{{ date('Y-m-d') }}">
+                                    <label class="form-label">Number of People <span class="text-danger">*</span></label>
+                                    <input type="number" name="guests" class="form-control" min="1" value="1" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Adults <span class="text-danger">*</span></label>
-                                    <input type="number" name="adults" class="form-control" min="1" value="1" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Children</label>
-                                    <input type="number" name="children" class="form-control" min="0" value="0">
-                                </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-12 mb-3">
                                     <label class="form-label">Your Name <span class="text-danger">*</span></label>
                                     <input type="text" name="names" class="form-control" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-12 mb-3">
                                     <label class="form-label">Email <span class="text-danger">*</span></label>
                                     <input type="email" name="email" class="form-control" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-12 mb-3">
                                     <label class="form-label">Phone <span class="text-danger">*</span></label>
                                     <input type="text" name="phone" class="form-control" required>
                                 </div>

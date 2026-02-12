@@ -53,7 +53,6 @@
                         <div style="display: flex; align-items: start; margin-bottom: 20px;">
                             <i class="flaticon-phone-flip" style="font-size: 24px; color: #2176af; margin-right: 15px; margin-top: 5px;"></i>
                             <div>
-                                <h5 style="margin-bottom: 5px;">Phone</h5>
                                 <p class="mb-0">
                                     <a href="tel:{{ $hotelContact->phone ?? $setting->phone ?? '' }}" style="color: #666; text-decoration: none;">
                                         {{ $hotelContact->phone ?? $setting->phone ?? 'N/A' }}
@@ -72,7 +71,6 @@
                         <div style="display: flex; align-items: start; margin-bottom: 20px;">
                             <i class="flaticon-envelope" style="font-size: 24px; color: #2176af; margin-right: 15px; margin-top: 5px;"></i>
                             <div>
-                                <h5 style="margin-bottom: 5px;">Email</h5>
                                 <p class="mb-0">
                                     <a href="mailto:{{ $hotelContact->email ?? $setting->email ?? '' }}" style="color: #666; text-decoration: none;">
                                         {{ $hotelContact->email ?? $setting->email ?? 'N/A' }}
@@ -84,7 +82,6 @@
                         <div style="display: flex; align-items: start; margin-bottom: 20px;">
                             <i class="flaticon-marker" style="font-size: 24px; color: #2176af; margin-right: 15px; margin-top: 5px;"></i>
                             <div>
-                                <h5 style="margin-bottom: 5px;">Address</h5>
                                 <p class="mb-0" style="color: #666; line-height: 1.6;">
                                     @if($hotelContact)
                                         {{ $hotelContact->address ?? '' }}<br>
@@ -102,7 +99,6 @@
                         <div style="display: flex; align-items: start;">
                             <i class="fas fa-globe" style="font-size: 24px; color: #2176af; margin-right: 15px; margin-top: 5px;"></i>
                             <div>
-                                <h5 style="margin-bottom: 5px;">Website</h5>
                                 <p class="mb-0">
                                     <a href="{{ $hotelContact->website }}" target="_blank" style="color: #666; text-decoration: none;">
                                         {{ $hotelContact->website }}
@@ -116,32 +112,41 @@
                     <!-- Social Media -->
                     <div class="mt-40">
                         <h5 class="mb-20">Follow Us</h5>
-                        <div style="display: flex; gap: 10px;">
-                            @if($hotelContact && $hotelContact->facebook)
-                            <a href="{{ $hotelContact->facebook }}" target="_blank" 
-                               style="display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: #1877F2; color: white; border-radius: 50%; text-decoration: none; transition: all 0.3s;">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            @endif
-                            @if($hotelContact && $hotelContact->instagram)
-                            <a href="{{ $hotelContact->instagram }}" target="_blank" 
-                               style="display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: white; border-radius: 50%; text-decoration: none; transition: all 0.3s;">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            @endif
-                            @if($hotelContact && $hotelContact->twitter)
-                            <a href="{{ $hotelContact->twitter }}" target="_blank" 
-                               style="display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: #1DA1F2; color: white; border-radius: 50%; text-decoration: none; transition: all 0.3s;">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            @endif
-                            @if($hotelContact && $hotelContact->linkedin)
-                            <a href="{{ $hotelContact->linkedin }}" target="_blank" 
-                               style="display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: #0077B5; color: white; border-radius: 50%; text-decoration: none; transition: all 0.3s;">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            @endif
-                        </div>
+                        @php
+                            $socialLinks = [];
+                            $facebook  = $hotelContact->facebook  ?? $setting->facebook  ?? null;
+                            $instagram = $hotelContact->instagram ?? $setting->instagram ?? null;
+                            $twitter   = $hotelContact->twitter   ?? $setting->twitter   ?? null;
+                            $linkedin  = $hotelContact->linkedin  ?? $setting->linkedin  ?? null;
+
+                            if ($facebook) {
+                                $socialLinks[] = ['url' => $facebook, 'icon' => 'fab fa-facebook-f', 'color' => '#1877F2'];
+                            }
+                            if ($instagram) {
+                                $socialLinks[] = [
+                                    'url' => $instagram,
+                                    'icon' => 'fab fa-instagram',
+                                    'color' => 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)'
+                                ];
+                            }
+                            if ($twitter) {
+                                $socialLinks[] = ['url' => $twitter, 'icon' => 'fab fa-twitter', 'color' => '#1DA1F2'];
+                            }
+                            if ($linkedin) {
+                                $socialLinks[] = ['url' => $linkedin, 'icon' => 'fab fa-linkedin-in', 'color' => '#0077B5'];
+                            }
+                        @endphp
+
+                        @if(count($socialLinks) > 0)
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                @foreach($socialLinks as $social)
+                                    <a href="{{ $social['url'] }}" target="_blank"
+                                       style="display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: {{ $social['color'] }}; color: white; border-radius: 50%; text-decoration: none; transition: all 0.3s;">
+                                        <i class="{{ $social['icon'] }}"></i>
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

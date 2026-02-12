@@ -46,6 +46,7 @@ class FrontOfficeController extends Controller
         $selectedDate = Carbon::parse($date);
 
         $reservations = Booking::where('status', 'confirmed')
+            ->where('reservation_type', 'room')
             ->where(function($query) use ($selectedDate) {
                 $query->whereBetween('checkin_date', [
                     $selectedDate->copy()->startOfMonth(),
@@ -66,6 +67,7 @@ class FrontOfficeController extends Controller
     public function inHouseList()
     {
         $bookings = Booking::where('status', 'confirmed')
+            ->where('reservation_type', 'room')
             ->whereNotNull('checked_in_at')
             ->whereNull('checked_out_at')
             ->with(['assignedRoom', 'checkedInBy'])
@@ -235,8 +237,11 @@ class FrontOfficeController extends Controller
         $startDate = $request->start_date ?? now()->format('Y-m-d');
         $endDate = $request->end_date ?? now()->addDays(30)->format('Y-m-d');
 
-        $reservations = Booking::whereBetween('checkin_date', [$startDate, $endDate])
-            ->orWhereBetween('checkout_date', [$startDate, $endDate])
+        $reservations = Booking::where('reservation_type', 'room')
+            ->where(function($query) use ($startDate, $endDate) {
+                $query->whereBetween('checkin_date', [$startDate, $endDate])
+                      ->orWhereBetween('checkout_date', [$startDate, $endDate]);
+            })
             ->with(['assignedRoom', 'room'])
             ->latest()
             ->get();

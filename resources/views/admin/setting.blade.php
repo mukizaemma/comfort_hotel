@@ -66,6 +66,35 @@
                                         <input type="email" class="form-control" id="email" name="email" value="{{ $data->email }}">
                                     </div>
                                 </div>
+                                <div class="row g-3 mt-1">
+                                    <div class="col-md-4">
+                                        <label for="reception_phone" class="form-label">Reception phone</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="reception_phone"
+                                            name="reception_phone"
+                                            value="{{ old('reception_phone', $data->reception_phone ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="manager_phone" class="form-label">Manager phone</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="manager_phone"
+                                            name="manager_phone"
+                                            value="{{ old('manager_phone', $data->manager_phone ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="restaurant_phone" class="form-label">Restaurant phone</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="restaurant_phone"
+                                            name="restaurant_phone"
+                                            value="{{ old('restaurant_phone', $data->restaurant_phone ?? '') }}">
+                                    </div>
+                                </div>
                             </fieldset>
                             <fieldset class="mb-4">
                                 <legend class="h6 text-secondary border-bottom pb-2 mb-3">Google Map</legend>

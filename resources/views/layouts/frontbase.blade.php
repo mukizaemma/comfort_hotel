@@ -246,8 +246,13 @@
                                         <a href="{{route('rooms')}}" class="navigation__menu--item__link">Rooms</a>
                                     </li>
 
-                                    <li class="navigation__menu--item">
-                                        <a href="{{route('facilities')}}" class="navigation__menu--item__link">Facilities</a>
+                                    <li class="navigation__menu--item has-child">
+                                        <a href="{{route('about')}}" class="navigation__menu--item__link">Facilities</a>
+                                        <ul class="submenu sub__style" role="menu">
+                                        @foreach ($facilities as $facility)
+                                            <li><a href="{{ route('facility',['slug'=>$facility->slug]) }}">{{ $facility->title }}</a></li>
+                                        @endforeach
+                                        </ul>
                                     </li>
 
                                     <li class="navigation__menu--item">
@@ -567,6 +572,12 @@
                         <p class="font-sm max-290 mt-20">
                             {{ $about->mission }}
                         </p>
+                        @php $reviewCount = \App\Models\Review::approved()->count(); @endphp
+                        <div class="mt-3 footer__reviews">
+                            <a href="{{ route('reviews') }}" class="link__item" style="color: #ffffff; text-decoration: none;">
+                                <strong>{{ $reviewCount }} </strong> Reviews | <span style="text-decoration: underline;">View All Reviews</span>
+                            </a>
+                        </div>
                     </div>
                     <div class="rts__widget">
                         <span class="widget__title">Hotel Facilities</span>
@@ -588,11 +599,109 @@
                     </div>
                     <div class="rts__widget">
                         <span class="widget__title">Contact Us</span>
+                        @php
+                            $receptionPhone  = $setting->reception_phone ?? null;
+                            $managerPhone    = $setting->manager_phone ?? null;
+                            $restaurantPhone = $setting->restaurant_phone ?? null;
+                        @endphp
                         <ul>
-                            <li><a aria-label="footer__contact" href="tel:{{$setting->phone ?? ''}}"><i class="flaticon-phone-flip"></i> {{$setting->phone ?? ''}}</a></li>
-                            <li><a aria-label="footer__contact" href="mailto:{{$setting->email ?? ''}}"><i class="flaticon-envelope"></i>{{$setting->email?? ''}}</a></li>
-                            <li><a aria-label="footer__contact" href="https://maps.app.goo.gl/HHpJhzWDsh4JCiVCA" target="_blank"><i class="flaticon-marker"></i>{{$setting->address ?? ''}}</a></li>
+                            @if($receptionPhone)
+                                <li>
+                                    <a aria-label="footer__contact" href="tel:{{ $receptionPhone }}">
+                                        <i class="flaticon-phone-flip"></i> Reception: {{ $receptionPhone }}
+                                    </a>
+                                </li>
+                            @endif
+                            @if($managerPhone)
+                                <li>
+                                    <a aria-label="footer__contact" href="tel:{{ $managerPhone }}">
+                                        <i class="flaticon-phone-flip"></i> Manager: {{ $managerPhone }}
+                                    </a>
+                                </li>
+                            @endif
+                            @if($restaurantPhone)
+                                <li>
+                                    <a aria-label="footer__contact" href="tel:{{ $restaurantPhone }}">
+                                        <i class="flaticon-phone-flip"></i> Restaurant: {{ $restaurantPhone }}
+                                    </a>
+                                </li>
+                            @endif
+                            @if(!$receptionPhone && !$managerPhone && !$restaurantPhone && !empty($setting->phone))
+                                <li>
+                                    <a aria-label="footer__contact" href="tel:{{ $setting->phone }}">
+                                        <i class="flaticon-phone-flip"></i> {{ $setting->phone }}
+                                    </a>
+                                </li>
+                            @endif
+                            <li>
+                                <a aria-label="footer__contact" href="mailto:{{ $setting->email ?? '' }}">
+                                    <i class="flaticon-envelope"></i>{{ $setting->email ?? '' }}
+                                </a>
+                            </li>
+                            <li>
+                                <a aria-label="footer__contact" href="https://maps.app.goo.gl/HHpJhzWDsh4JCiVCA" target="_blank">
+                                    <i class="flaticon-marker"></i>{{ $setting->address ?? '' }}
+                                </a>
+                            </li>
                         </ul>
+
+                        @php
+                            $socialLinks = [];
+                            if (!empty($setting->facebook)) {
+                                $socialLinks[] = [
+                                    'url' => $setting->facebook,
+                                    'icon' => 'fab fa-facebook-f',
+                                    'label' => 'Facebook',
+                                    'color' => '#1877F2',
+                                ];
+                            }
+                            if (!empty($setting->twitter)) {
+                                $socialLinks[] = [
+                                    'url' => $setting->twitter,
+                                    'icon' => 'fab fa-twitter',
+                                    'label' => 'Twitter',
+                                    'color' => '#1DA1F2',
+                                ];
+                            }
+                            if (!empty($setting->instagram)) {
+                                $socialLinks[] = [
+                                    'url' => $setting->instagram,
+                                    'icon' => 'fab fa-instagram',
+                                    'label' => 'Instagram',
+                                    'color' => 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)',
+                                ];
+                            }
+                            if (!empty($setting->youtube)) {
+                                $socialLinks[] = [
+                                    'url' => $setting->youtube,
+                                    'icon' => 'fab fa-youtube',
+                                    'label' => 'YouTube',
+                                    'color' => '#FF0000',
+                                ];
+                            }
+                            if (!empty($setting->linkedin)) {
+                                $socialLinks[] = [
+                                    'url' => $setting->linkedin,
+                                    'icon' => 'fab fa-linkedin-in',
+                                    'label' => 'LinkedIn',
+                                    'color' => '#0077B5',
+                                ];
+                            }
+                        @endphp
+
+                        @if(count($socialLinks) > 0)
+                            <div class="footer__social__link mt-4" style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                @foreach($socialLinks as $social)
+                                    <a href="{{ $social['url'] }}"
+                                       aria-label="{{ $social['label'] }}"
+                                       class="link__item social-icon"
+                                       target="_blank"
+                                       style="display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; background: {{ $social['color'] }}; color: #ffffff; border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                                        <i class="{{ $social['icon'] }}"></i>
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
 
                         <div class="book mt-5">
                             <a href="{{ route('connect') }}" class="theme-btn btn-style sm-btn fill"><span>Book Now</span></a>
@@ -609,64 +718,6 @@
                 <div class="row">
                     <div class="copyright__wrapper" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
                         <p class="mb-0">© <span id="year"></span> {{ $setting->company }}. All rights reserved. delivered by <a href="https://iremetech.com" target="_blank">Ireme Technologies</a> </p>
-                        @php
-                            $socialLinks = [];
-                            if (!empty($setting->facebook)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->facebook,
-                                    'icon' => 'fab fa-facebook-f',
-                                    'label' => 'Facebook',
-                                    'color' => '#1877F2'
-                                ];
-                            }
-                            if (!empty($setting->twitter)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->twitter,
-                                    'icon' => 'fab fa-twitter',
-                                    'label' => 'Twitter',
-                                    'color' => '#1DA1F2'
-                                ];
-                            }
-                            if (!empty($setting->instagram)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->instagram,
-                                    'icon' => 'fab fa-instagram',
-                                    'label' => 'Instagram',
-                                    'color' => 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)'
-                                ];
-                            }
-                            if (!empty($setting->youtube)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->youtube,
-                                    'icon' => 'fab fa-youtube',
-                                    'label' => 'YouTube',
-                                    'color' => '#FF0000'
-                                ];
-                            }
-                            if (!empty($setting->linkedin)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->linkedin,
-                                    'icon' => 'fab fa-linkedin-in',
-                                    'label' => 'LinkedIn',
-                                    'color' => '#0077B5'
-                                ];
-                            }
-                        @endphp
-                        @if(count($socialLinks) > 0)
-                        <div class="footer__social__link" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
-                            @foreach($socialLinks as $social)
-                            <a href="{{ $social['url'] }}" aria-label="{{ $social['label'] }}" class="link__item social-icon" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: {{ $social['color'] }}; color: white; border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-                                <i class="{{ $social['icon'] }}"></i>
-                            </a>
-                            @endforeach
-                        </div>
-                        @endif
-                        <div class="mt-3">
-                            @php $reviewCount = \App\Models\Review::approved()->count(); @endphp
-                            <a href="{{ route('reviews') }}" class="link__item" style="color: #ffffff; text-decoration: none;">
-                                <strong>{{ $reviewCount }} </strong>  Reviews | <span style="text-decoration: underline;">View All Reviews</span>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
