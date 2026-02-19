@@ -164,8 +164,8 @@
         <div class="row position-relative justify-content-center text-center mb-60">
             <div class="col-lg-6 wow fadeInUp">
                 <div class="section__topbar">
-                    <h2 class="section__title">Our Facilities</h2>
-                    <p class="font-sm">World-class amenities for your comfort and convenience</p>
+                    <h2 class="section__title">Our Services</h2>
+                    <p class="font-sm">World-class facilities for your comfort and convenience</p>
                 </div>
             </div>
         </div>
@@ -193,7 +193,7 @@
         <div class="row mt-40">
             <div class="col-12 text-center">
                 <a href="{{ route('facilities') }}" class="theme-btn btn-style fill">
-                    <span>View All Facilities</span>
+                    <span>View All Services</span>
                 </a>
             </div>
         </div>

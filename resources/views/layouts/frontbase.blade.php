@@ -228,36 +228,45 @@
                         <div class="navigation d-none d-lg-block">
                             <nav class="navigation__menu" id="main__menu">
                                 <ul class="list-unstyled">
-                                    <li class="navigation__menu--item">
-                                        <a href="{{route('home')}}" class="navigation__menu--item__link">Home</a>
-                                    </li>
 
                                     <li class="navigation__menu--item has-child">
-                                        <a href="{{route('about')}}" class="navigation__menu--item__link">About</a>
+                                        <a href="{{route('home')}}" class="navigation__menu--item__link">About</a>
                                         <ul class="submenu sub__style" role="menu">
-                                            <li role="menuitem"><a href="{{route('about')}}#background">Background</a></li>
+                                            <li role="menuitem"><a href="{{route('about')}}#background">Comfort Hotel</a></li>
                                             <li role="menuitem"><a href="{{route('terms')}}">Terms & Conditions</a></li>
                                             <li role="menuitem"><a href="{{route('contact')}}">Contacts</a></li>
                                             <li role="menuitem"><a href="{{route('updates')}}">Updates</a></li>
                                         </ul>
                                     </li>
 
-                                    <li class="navigation__menu--item">
-                                        <a href="{{route('rooms')}}" class="navigation__menu--item__link">Rooms</a>
+                                    <li class="navigation__menu--item has-child">
+                                        <a href="{{route('about')}}" class="navigation__menu--item__link">Rooms & Apartments</a>
+                                        <ul class="submenu sub__style" role="menu">
+                                            <li><a href="{{ route('rooms') }}">Rooms</a></li>
+                                            <li><a href="{{ route('rooms') }}">Apartments</a></li>
+                                        </ul>
                                     </li>
 
-                                    <li class="navigation__menu--item has-child">
+                                    <li class="navigation__menu--item">
+                                        <a href="{{route('activities')}}" class="navigation__menu--item__link">Dining</a>
+                                    </li>
+
+                                    <li class="navigation__menu--item">
+                                        <a href="{{route('activities')}}" class="navigation__menu--item__link">Meetings & Events</a>
+                                    </li>
+
+                                    <li class="navigation__menu--item">
+                                        <a href="{{route('activities')}}" class="navigation__menu--item__link">SPA & Wellness</a>
+                                    </li>
+
+                                    {{-- <li class="navigation__menu--item has-child">
                                         <a href="{{route('about')}}" class="navigation__menu--item__link">Facilities</a>
                                         <ul class="submenu sub__style" role="menu">
                                         @foreach ($facilities as $facility)
                                             <li><a href="{{ route('facility',['slug'=>$facility->slug]) }}">{{ $facility->title }}</a></li>
                                         @endforeach
                                         </ul>
-                                    </li>
-
-                                    <li class="navigation__menu--item">
-                                        <a href="{{route('activities')}}" class="navigation__menu--item__link">Activities</a>
-                                    </li>
+                                    </li> --}}
 
                                     <li class="navigation__menu--item">
                                         <a href="{{route('gallery')}}" class="navigation__menu--item__link">Gallery</a>

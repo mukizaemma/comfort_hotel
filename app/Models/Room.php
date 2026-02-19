@@ -21,6 +21,7 @@ class Room extends Model
         'room_status',
         'user_id',
         'category',
+        'room_type',
         'price',
         'couplePrice',
         'max_occupancy',

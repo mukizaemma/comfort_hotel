@@ -37,14 +37,17 @@ class PageHero extends Model
             // If hero doesn't exist, create it
             if (!$hero) {
                 $pageNames = [
-                    'about' => 'About Us',
-                    'terms' => 'Terms & Conditions',
-                    'contact' => 'Contact',
-                    'rooms' => 'Rooms',
-                    'facilities' => 'Facilities',
-                    'updates' => 'Updates/Blogs',
-                    'gallery' => 'Gallery',
-                    'book-now' => 'Book Now',
+                    'about'           => 'About Us',
+                    'terms'           => 'Terms & Conditions',
+                    'contact'         => 'Contact',
+                    'rooms'           => 'Rooms',
+                    'facilities'      => 'Facilities',
+                    'updates'         => 'Updates/Blogs',
+                    'gallery'         => 'Gallery',
+                    'book-now'        => 'Book Now',
+                    'dining'          => 'Dining',
+                    'meetings-events' => 'Meetings & Events',
+                    'spa-wellness'    => 'SPA & Wellness',
                 ];
                 
                 try {

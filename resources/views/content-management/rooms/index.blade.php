@@ -21,6 +21,7 @@
                             <th>ID</th>
                             <th>Room Number</th>
                             <th>Title</th>
+                            <th>Type</th>
                             <th>Status</th>
                             <th>Room Status</th>
                             <th>Price</th>
@@ -34,6 +35,7 @@
                             <td>{{ $room->id }}</td>
                             <td>{{ $room->room_number ?? 'N/A' }}</td>
                             <td>{{ $room->title }}</td>
+                            <td>{{ ucfirst($room->room_type ?? 'room') }}</td>
                             <td><span class="badge bg-{{ $room->status == 'Active' ? 'success' : 'danger' }}">{{ $room->status }}</span></td>
                             <td>
                                 <span class="badge bg-{{ $room->room_status == 'available' ? 'success' : ($room->room_status == 'occupied' ? 'danger' : ($room->room_status == 'reserved' ? 'warning' : 'secondary')) }}">
@@ -84,6 +86,16 @@
                             <label class="form-label">Room Number</label>
                             <input type="text" class="form-control" id="room_number" name="room_number">
                             <small class="text-muted">Optional</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Room Type <span class="text-danger">*</span></label>
+                            <select class="form-control" id="room_type" name="room_type" required>
+                                <option value="room">Room</option>
+                                <option value="apartment">Apartment</option>
+                            </select>
+                            <small class="text-muted">Use "Room" for standard rooms and "Apartment" for apartment units.</small>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -207,6 +219,7 @@ function editRoom(id) {
             // Set Summernote content properly
             $('#room_description').summernote('code', data.description || '');
             document.getElementById('room_category').value = data.category || '';
+            document.getElementById('room_type').value = data.room_type || 'room';
             document.getElementById('room_price').value = data.price || '';
             document.getElementById('room_couplePrice').value = data.couplePrice || '';
             document.getElementById('room_max_occupancy').value = data.max_occupancy || 2;

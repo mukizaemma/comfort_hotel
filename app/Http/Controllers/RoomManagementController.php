@@ -26,6 +26,7 @@ class RoomManagementController extends Controller
             'description' => 'nullable|string',
             'cover_image' => 'nullable|image|max:2048',
             'category' => 'nullable|string',
+            'room_type' => 'required|in:room,apartment',
             'price' => 'nullable|numeric',
             'couplePrice' => 'nullable|numeric',
             'max_occupancy' => 'nullable|integer',
@@ -44,6 +45,7 @@ class RoomManagementController extends Controller
         $room->room_number = $request->room_number;
         $room->description = $request->description;
         $room->category = $request->category;
+        $room->room_type = $request->room_type;
         $room->price = $request->price;
         $room->couplePrice = $request->couplePrice;
         $room->max_occupancy = $request->max_occupancy ?? 2;
@@ -85,6 +87,7 @@ class RoomManagementController extends Controller
             'description' => 'nullable|string',
             'cover_image' => 'nullable|image|max:2048',
             'category' => 'nullable|string',
+            'room_type' => 'required|in:room,apartment',
             'price' => 'nullable|numeric',
             'couplePrice' => 'nullable|numeric',
             'max_occupancy' => 'nullable|integer',
@@ -103,6 +106,7 @@ class RoomManagementController extends Controller
         $room->room_number = $request->room_number;
         $room->description = $request->description;
         $room->category = $request->category;
+        $room->room_type = $request->room_type;
         $room->price = $request->price;
         $room->couplePrice = $request->couplePrice;
         $room->max_occupancy = $request->max_occupancy;

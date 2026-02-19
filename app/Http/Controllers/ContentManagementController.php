@@ -525,6 +525,9 @@ class ContentManagementController extends Controller
             ['slug' => 'updates', 'name' => 'Updates/Blogs'],
             ['slug' => 'gallery', 'name' => 'Gallery'],
             ['slug' => 'book-now', 'name' => 'Book Now'],
+            ['slug' => 'dining', 'name' => 'Dining'],
+            ['slug' => 'meetings-events', 'name' => 'Meetings & Events'],
+            ['slug' => 'spa-wellness', 'name' => 'SPA & Wellness'],
         ];
 
         // Create missing page heroes

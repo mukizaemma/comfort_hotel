@@ -6928,22 +6928,7 @@ textarea:focus-visible, input:focus-visible {
 }
 .navigation__menu--item {
   position: relative;
-  margin: 0 20px;
-}
-@media screen and (max-width: 1400px) {
-  .navigation__menu--item {
-    margin: 0 25px;
-  }
-}
-@media screen and (max-width: 1300px) and (min-width: 1200px) {
-  .navigation__menu--item {
-    margin: 0 15px;
-  }
-}
-@media screen and (max-width: 1200px) {
-  .navigation__menu--item {
-    margin: 0 14px;
-  }
+  margin: 0 8px;
 }
 .navigation__menu--item:last-child {
   margin-right: 0;
@@ -6959,10 +6944,10 @@ textarea:focus-visible, input:focus-visible {
 }
 .navigation__menu--item__link {
   position: relative;
-  font-size: 16px;
+  font-size: 15px;
   text-transform: capitalize;
-  padding-top: 24px;
-  padding-bottom: 30px;
+  padding-top: 18px;
+  padding-bottom: 22px;
   font-weight: 400;
   display: block;
   color: var(--rts-para);
@@ -6987,7 +6972,7 @@ textarea:focus-visible, input:focus-visible {
   content: "\f122";
   font-family: flaticon_bokinn !important;
   top: 48%;
-  right: -15px;
+  right: -5px;
   transform: translateY(-50%);
   color: var(--rts-heading);
   font-size: 14px;
@@ -7135,7 +7120,7 @@ textarea:focus-visible, input:focus-visible {
   position: absolute;
   width: 1000px;
   background-color: var(--rts-white);
-  padding: 30px;
+  padding: 20px;
   opacity: 0;
   visibility: hidden;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -8016,12 +8001,43 @@ textarea:focus-visible, input:focus-visible {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+}
+
+.main__logo {
+  flex: 0 0 auto;
+}
+
+.main__logo .logo__class {
+  max-width: 80px;
+  height: auto;
+}
+
+.main__nav {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.navigation__menu ul {
+  display: flex;
+  max-width: 100%;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
 }
 
 .main__right {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   align-items: center;
+  flex: 0 0 auto;
+}
+
+.main__right .theme-btn.btn-style.fill {
+  padding: 10px 18px;
+  font-size: 14px;
+  white-space: nowrap;
 }
 @media screen and (max-width: 992px) {
   .main__right {
@@ -8083,7 +8099,7 @@ textarea:focus-visible, input:focus-visible {
   background-color: transparent;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   color: var(--rts-white);
   font-size: 20px;
   font-family: var(--glida);
@@ -8099,7 +8115,8 @@ textarea:focus-visible, input:focus-visible {
 
 .main__header .main__header__wrapper {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: auto 1fr auto;
+  column-gap: 32px;
   position: relative;
 }
 @media screen and (max-width: 992px) {
@@ -8109,7 +8126,7 @@ textarea:focus-visible, input:focus-visible {
 }
 .main__header .main__header__wrapper .main__logo {
   display: grid;
-  justify-items: center;
+  justify-items: left;
 }
 @media screen and (max-width: 992px) {
   .main__header .main__header__wrapper .main__logo {
@@ -8121,7 +8138,7 @@ textarea:focus-visible, input:focus-visible {
 }
 .main__header.is__home__four .main__header__wrapper {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 }
 @media screen and (max-width: 992px) {
   .main__header.is__home__four .main__header__wrapper {
