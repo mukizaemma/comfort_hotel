@@ -44,7 +44,11 @@ class HomeController extends Controller
         $setting = Setting::first();
         $slides = Slide::latest()->get();
         $about = About::first();
-        $rooms = Room::with('amenities')->where('status', 'Active')->oldest()->take(6)->get();
+        // Show all active rooms and apartments on the home carousel
+        $rooms = Room::with('amenities')
+            ->where('status', 'Active')
+            ->oldest()
+            ->get();
         $gallery = Gallery::latest()->take(9)->get();
         $homeFacilities = Facility::where('status', 'Active')->oldest()->take(4)->get();
         $services = Service::where('status', 'Active')->with('images')->latest()->take(4)->get();
@@ -84,7 +88,11 @@ class HomeController extends Controller
     }
 
     public function rooms(Request $request){
-        $rooms = Room::with(['amenities', 'images'])->where('status', 'Active')->oldest()->get();
+        $rooms = Room::with(['amenities', 'images'])
+            ->where('status', 'Active')
+            ->where('room_type', 'room')
+            ->oldest()
+            ->get();
         $setting = Setting::first();
         $about = About::first();
         $facilities = Facility::where('status', 'Active')->oldest()->get();
@@ -96,6 +104,7 @@ class HomeController extends Controller
             'about' => $about,
             'facilities' => $facilities,
             'pageHero' => $pageHero,
+            'activeType' => 'room',
         ]);
     }
 
@@ -151,21 +160,24 @@ class HomeController extends Controller
     }
 
 
-    public function apartment(){
-        $room = Room::with('amenities')->where('category', 'Apartment')->first();
-        $amenities = $room->amenities ?? collect();
-        $images = $room->images ?? collect();
-        $allRooms = Room::where('id', '!=', $room->id)->oldest()->get();
+    public function apartments(Request $request){
+        $rooms = Room::with(['amenities', 'images'])
+            ->where('status', 'Active')
+            ->where('room_type', 'apartment')
+            ->oldest()
+            ->get();
         $setting = Setting::first();
         $about = About::first();
-        return view('frontend.apartment',[
-            'room'=>$room,
-            'room'=>$room,
-            'allRooms'=>$allRooms,
-            'images'=>$images,
-            'amenities'=>$amenities,
-            'setting'=>$setting,
-            'about'=>$about,
+        $facilities = Facility::where('status', 'Active')->oldest()->get();
+        $pageHero = PageHero::getBySlug('rooms');
+        
+        return view('frontend.rooms', [
+            'rooms' => $rooms,
+            'setting' => $setting,
+            'about' => $about,
+            'facilities' => $facilities,
+            'pageHero' => $pageHero,
+            'activeType' => 'apartment',
         ]);
     }
 
@@ -188,10 +200,20 @@ class HomeController extends Controller
 
     public function restaurant(){
         $restaurant = Restaurant::with('images')->first();
-        $images = $restaurant->images;
+        if (!$restaurant) {
+            $restaurant = Restaurant::create([
+                'title' => 'Dining',
+                'description' => 'Discover our restaurant and bar.',
+            ]);
+        }
+        $images = $restaurant->images ?? collect();
+        $setting = Setting::first();
+        $about = About::first();
         return view('frontend.restaurant',[
             'restaurant'=>$restaurant,
             'images'=>$images,
+            'setting'=>$setting,
+            'about'=>$about,
         ]);
     }
 
@@ -208,10 +230,39 @@ class HomeController extends Controller
 
     public function events(){
         $event = Eventpage::with('images')->first();
-        $images = $event->images;
+        if (!$event) {
+            $event = Eventpage::create([
+                'title' => 'Meetings & Events',
+                'description' => 'Host your meetings and events with us.',
+                'details' => '',
+            ]);
+        }
+        $images = $event->images ?? collect();
+        $setting = Setting::first();
+        $about = About::first();
         return view('frontend.events',[
             'event'=>$event,
             'images'=>$images,
+            'setting'=>$setting,
+            'about'=>$about,
+        ]);
+    }
+
+    public function spaWellness(){
+        // For now reuse gallery images tagged as 'spa' category
+        $spaImages = Gallery::where('media_type', 'image')
+            ->where('category', 'spa')
+            ->latest()
+            ->get();
+        $setting = Setting::first();
+        $about = About::first();
+        $pageHero = PageHero::getBySlug('spa-wellness');
+
+        return view('frontend.spa-wellness', [
+            'spaImages' => $spaImages,
+            'setting'   => $setting,
+            'about'     => $about,
+            'pageHero'  => $pageHero,
         ]);
     }
 

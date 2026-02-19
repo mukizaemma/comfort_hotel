@@ -14,51 +14,116 @@
                 </button>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Room Number</th>
-                            <th>Title</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Room Status</th>
-                            <th>Price</th>
-                            <th>Amenities</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($rooms as $room)
-                        <tr>
-                            <td>{{ $room->id }}</td>
-                            <td>{{ $room->room_number ?? 'N/A' }}</td>
-                            <td>{{ $room->title }}</td>
-                            <td>{{ ucfirst($room->room_type ?? 'room') }}</td>
-                            <td><span class="badge bg-{{ $room->status == 'Active' ? 'success' : 'danger' }}">{{ $room->status }}</span></td>
-                            <td>
-                                <span class="badge bg-{{ $room->room_status == 'available' ? 'success' : ($room->room_status == 'occupied' ? 'danger' : ($room->room_status == 'reserved' ? 'warning' : 'secondary')) }}">
-                                    {{ ucfirst($room->room_status) }}
-                                </span>
-                            </td>
-                            <td>{{ number_format($room->price ?? 0) }} RWF</td>
-                            <td>{{ $room->amenities->count() }} amenities</td>
-                            <td>
-                                <button class="btn btn-sm btn-info" onclick="viewRoom({{ $room->id }})">
-                                    <i class="fa fa-eye"></i>
-                                </button>
-                                <button class="btn btn-sm btn-warning" onclick="editRoom({{ $room->id }})">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteRoom({{ $room->id }})">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <!-- Tabs for rooms vs apartments -->
+            <ul class="nav nav-tabs mb-3" id="roomsTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="rooms-tab" data-bs-toggle="tab" data-bs-target="#rooms-list" type="button" role="tab" aria-controls="rooms-list" aria-selected="true">
+                        Rooms
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="apartments-tab" data-bs-toggle="tab" data-bs-target="#apartments-list" type="button" role="tab" aria-controls="apartments-list" aria-selected="false">
+                        Apartments
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="roomsTabsContent">
+                <!-- Rooms table -->
+                <div class="tab-pane fade show active" id="rooms-list" role="tabpanel" aria-labelledby="rooms-tab">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Room Status</th>
+                                    <th>Price</th>
+                                    <th>Amenities</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($rooms->where('room_type', 'room') as $room)
+                                <tr>
+                                    <td>{{ $room->id }}</td>
+                                    <td>{{ $room->title }}</td>
+                                    <td>{{ ucfirst($room->room_type ?? 'room') }}</td>
+                                    <td><span class="badge bg-{{ $room->status == 'Active' ? 'success' : 'danger' }}">{{ $room->status }}</span></td>
+                                    <td>
+                                        <span class="badge bg-{{ $room->room_status == 'available' ? 'success' : ($room->room_status == 'occupied' ? 'danger' : ($room->room_status == 'reserved' ? 'warning' : 'secondary')) }}">
+                                            {{ ucfirst($room->room_status) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ number_format($room->price ?? 0) }} RWF</td>
+                                    <td>{{ $room->amenities->count() }} amenities</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewRoom({{ $room->id }})">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-warning" onclick="editRoom({{ $room->id }})">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteRoom({{ $room->id }})">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Apartments table -->
+                <div class="tab-pane fade" id="apartments-list" role="tabpanel" aria-labelledby="apartments-tab">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Room Status</th>
+                                    <th>Price</th>
+                                    <th>Amenities</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($rooms->where('room_type', 'apartment') as $room)
+                                <tr>
+                                    <td>{{ $room->id }}</td>
+                                    <td>{{ $room->title }}</td>
+                                    <td>{{ ucfirst($room->room_type ?? 'apartment') }}</td>
+                                    <td><span class="badge bg-{{ $room->status == 'Active' ? 'success' : 'danger' }}">{{ $room->status }}</span></td>
+                                    <td>
+                                        <span class="badge bg-{{ $room->room_status == 'available' ? 'success' : ($room->room_status == 'occupied' ? 'danger' : ($room->room_status == 'reserved' ? 'warning' : 'secondary')) }}">
+                                            {{ ucfirst($room->room_status) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ number_format($room->price ?? 0) }} RWF</td>
+                                    <td>{{ $room->amenities->count() }} amenities</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewRoom({{ $room->id }})">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-warning" onclick="editRoom({{ $room->id }})">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteRoom({{ $room->id }})">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -83,13 +148,6 @@
                             <div class="invalid-feedback">Please provide a title.</div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Room Number</label>
-                            <input type="text" class="form-control" id="room_number" name="room_number">
-                            <small class="text-muted">Optional</small>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
                             <label class="form-label">Room Type <span class="text-danger">*</span></label>
                             <select class="form-control" id="room_type" name="room_type" required>
                                 <option value="room">Room</option>
@@ -104,15 +162,11 @@
                         <small class="text-muted">Use the rich text editor toolbar to format your room description with styles, colors, lists, and more</small>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Category</label>
-                            <input type="text" class="form-control" id="room_category" name="category">
-                        </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Price</label>
                             <input type="number" class="form-control" id="room_price" name="price">
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Couple Price</label>
                             <input type="number" class="form-control" id="room_couplePrice" name="couplePrice">
                         </div>
@@ -215,10 +269,8 @@ function editRoom(id) {
             currentRoomId = id;
             document.getElementById('room_id').value = data.id;
             document.getElementById('room_title').value = data.title;
-            document.getElementById('room_number').value = data.room_number || '';
             // Set Summernote content properly
             $('#room_description').summernote('code', data.description || '');
-            document.getElementById('room_category').value = data.category || '';
             document.getElementById('room_type').value = data.room_type || 'room';
             document.getElementById('room_price').value = data.price || '';
             document.getElementById('room_couplePrice').value = data.couplePrice || '';

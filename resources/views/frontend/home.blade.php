@@ -73,52 +73,69 @@
                 </div>
             </div>
         </div>
-        <div class="row g-30">
-            @foreach($rooms as $room)
-            <div class="col-xl-4 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".{{ $loop->index * 2 }}s">
-                <div class="room__card" style="height: 100%; display: flex; flex-direction: column; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s;">
-                    <div class="room__card__top" style="height: 280px; overflow: hidden;">
-                        <div class="room__card__image" style="height: 100%;">
-                            <a href="{{ route('room', ['slug' => $room->slug]) }}">
-                                <img src="{{ asset('storage/' . ($room->cover_image ?? 'rooms/default.jpg')) }}" 
-                                     alt="{{ $room->title }}" 
-                                     loading="lazy"
-                                     style="width: 100%; height: 100%; object-fit: cover;">
-                            </a>
+
+        <div class="rooms-carousel-wrapper wow fadeInUp" data-wow-delay=".1s">
+            <div class="swiper rooms-swiper">
+                <div class="swiper-wrapper">
+                    @foreach($rooms->chunk(2) as $roomChunk)
+                        <div class="swiper-slide">
+                            <div class="row g-4">
+                                @foreach($roomChunk as $room)
+                                    <div class="col-md-6">
+                                        <div class="room__card" style="height: 100%; display: flex; flex-direction: column; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                                            <div class="room__card__top" style="height: 280px; overflow: hidden;">
+                                                <div class="room__card__image" style="height: 100%;">
+                                                    <a href="{{ route('room', ['slug' => $room->slug]) }}">
+                                                        <img src="{{ asset('storage/' . ($room->cover_image ?? 'rooms/default.jpg')) }}" 
+                                                            alt="{{ $room->title }}" 
+                                                            loading="lazy"
+                                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="room__card__meta" style="padding: 20px; flex: 1; display: flex; flex-direction: column;">
+                                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                                                    <a href="{{ route('room', ['slug' => $room->slug]) }}" class="room__card__title h5" style="flex: 1; margin-right: 10px;">
+                                                        {{ $room->title }}
+                                                    </a>
+                                                    <span class="h6" style="color: #2176af; font-weight: 600; white-space: nowrap;">
+                                                        ${{ number_format($room->price, 0) }}/Night
+                                                    </span>
+                                                </div>
+                                                <div class="room__card__meta__info" style="flex: 1; margin-bottom: 15px;">
+                                                    <p class="font-sm" style="color: #666; line-height: 1.6;">
+                                                        {!! Str::words(strip_tags($room->description ?? ''), 20, '...') !!}
+                                                    </p>
+                                                </div>
+                                                <div style="display: flex; gap: 10px; margin-top: auto;">
+                                                    <a href="{{ route('room', ['slug' => $room->slug]) }}" class="theme-btn btn-style sm-btn border" style="flex: 1; text-align: center;">
+                                                        <span>View Details</span>
+                                                    </a>
+                                                    <a href="{{ route('room', ['slug' => $room->slug]) }}#booking" class="theme-btn btn-style sm-btn fill" style="flex: 1; text-align: center;">
+                                                        <span>Book Now</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
-                    <div class="room__card__meta" style="padding: 20px; flex: 1; display: flex; flex-direction: column;">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
-                            <a href="{{ route('room', ['slug' => $room->slug]) }}" class="room__card__title h5" style="flex: 1; margin-right: 10px;">
-                                {{ $room->title }}
-                            </a>
-                            <span class="h6" style="color: #2176af; font-weight: 600; white-space: nowrap;">
-                                ${{ number_format($room->price, 0) }}/Night
-                            </span>
-                        </div>
-                        <div class="room__card__meta__info" style="flex: 1; margin-bottom: 15px;">
-                            <p class="font-sm" style="color: #666; line-height: 1.6;">
-                                {!! Str::words(strip_tags($room->description ?? ''), 20, '...') !!}
-                            </p>
-                        </div>
-                        <div style="display: flex; gap: 10px; margin-top: auto;">
-                            <a href="{{ route('room', ['slug' => $room->slug]) }}" class="theme-btn btn-style sm-btn border" style="flex: 1; text-align: center;">
-                                <span>View Details</span>
-                            </a>
-                            <a href="{{ route('room', ['slug' => $room->slug]) }}#booking" class="theme-btn btn-style sm-btn fill" style="flex: 1; text-align: center;">
-                                <span>Book Now</span>
-                            </a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
+
+                <div class="rooms-swiper-pagination swiper-pagination"></div>
+
+                <div class="rooms-swiper-button-prev swiper-button-prev"></div>
+                <div class="rooms-swiper-button-next swiper-button-next"></div>
             </div>
-            @endforeach
         </div>
-        @if($rooms->count() > 6)
+
+        @if($rooms->count() > 0)
         <div class="row mt-40">
             <div class="col-12 text-center">
                 <a href="{{ route('rooms') }}" class="theme-btn btn-style fill">
-                    <span>View All Rooms</span>
+                    <span>View All Rooms & Apartments</span>
                 </a>
             </div>
         </div>
@@ -169,27 +186,44 @@
                 </div>
             </div>
         </div>
-        <div class="row g-30">
-            @foreach($homeFacilities as $facility)
-            <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".{{ $loop->index * 2 }}s">
-                <div class="facility__card" style="text-align: center; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.3s;">
-                    <div style="margin-bottom: 20px;">
-                        <img src="{{ asset('storage/' . ($facility->cover_image ?? 'facilities/default.jpg')) }}" 
-                             alt="{{ $facility->title }}" 
-                             loading="lazy"
-                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
-                    </div>
-                    <h5 style="margin-bottom: 10px;">{{ $facility->title }}</h5>
-                    <p class="font-sm" style="color: #666;">
-                        {!! Str::words(strip_tags($facility->description ?? ''), 15, '...') !!}
-                    </p>
-                    <a href="{{ route('facility', ['slug' => $facility->slug]) }}" class="theme-btn btn-style sm-btn border mt-3">
-                        <span>Learn More</span>
-                    </a>
+
+        <div class="facilities-carousel-wrapper wow fadeInUp" data-wow-delay=".1s">
+            <div class="swiper facilities-swiper">
+                <div class="swiper-wrapper">
+                    @foreach($homeFacilities->chunk(2) as $facilityChunk)
+                        <div class="swiper-slide">
+                            <div class="row g-4">
+                                @foreach($facilityChunk as $facility)
+                                    <div class="col-md-6">
+                                            <div class="facility__card" style="text-align: center; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                                            <div style="margin-bottom: 20px;">
+                                                <img src="{{ asset('storage/' . ($facility->cover_image ?? 'facilities/default.jpg')) }}" 
+                                                        alt="{{ $facility->title }}" 
+                                                        loading="lazy"
+                                                        style="width: 100%; height: 280px; object-fit: cover; border-radius: 8px;">
+                                            </div>
+                                            <h5 style="margin-bottom: 10px;">{{ $facility->title }}</h5>
+                                            <p class="font-sm" style="color: #666;">
+                                                {!! Str::words(strip_tags($facility->description ?? ''), 15, '...') !!}
+                                            </p>
+                                            <a href="{{ route('facility', ['slug' => $facility->slug]) }}" class="theme-btn btn-style sm-btn border mt-3">
+                                                <span>Learn More</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
+
+                <div class="facilities-swiper-pagination swiper-pagination"></div>
+
+                <div class="facilities-swiper-button-prev swiper-button-prev"></div>
+                <div class="facilities-swiper-button-next swiper-button-next"></div>
             </div>
-            @endforeach
         </div>
+
         <div class="row mt-40">
             <div class="col-12 text-center">
                 <a href="{{ route('facilities') }}" class="theme-btn btn-style fill">

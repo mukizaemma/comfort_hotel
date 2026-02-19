@@ -12,9 +12,9 @@ class Restaurant extends Model
     protected $table = 'restaurants';
 
     protected $fillable = [
+        'title',
         'description',
         'image',
-        'restaurant_id',
     ];
 
     public function images(){

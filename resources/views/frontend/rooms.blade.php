@@ -6,8 +6,11 @@
     <!-- page header -->
 @php
     $heroImage = '';
-    $heroCaption = 'Our Rooms';
-    $heroDescription = 'A step up from the standard room, often with better views, more space, and additional amenities.';
+    $isApartmentPage = ($activeType ?? 'room') === 'apartment';
+    $heroCaption = $isApartmentPage ? 'Our Apartments' : 'Our Rooms';
+    $heroDescription = $isApartmentPage
+        ? 'Apartments with one and two rooms, ideal for longer stays and families who need more space and privacy.'
+        : 'A step up from the standard room, often with better views, more space, and additional amenities.';
     
     if ($pageHero && !empty($pageHero->background_image)) {
         $heroImage = asset('storage/' . $pageHero->background_image);
@@ -37,8 +40,24 @@
     </div>
     <!-- page header end -->
 
+    <!-- Toggle between rooms and apartments -->
+    <div class="rts__section pt-60 pb-0">
+        <div class="container">
+            <div class="d-flex justify-content-center gap-3 mb-4">
+                <a href="{{ route('rooms') }}"
+                   class="btn btn-sm {{ ($activeType ?? 'room') === 'room' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    View Rooms
+                </a>
+                <a href="{{ route('apartments') }}"
+                   class="btn btn-sm {{ ($activeType ?? 'room') === 'apartment' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    View Apartments
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- rooms grid: image, title, price/Night, short description, View details (no booking form on listing) -->
-    <div class="rts__section section__padding">
+    <div class="rts__section section__padding pt-40">
         <div class="container">
             <div class="row g-4">
                 @foreach ($rooms as $room)

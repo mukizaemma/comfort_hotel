@@ -240,23 +240,23 @@
                                     </li>
 
                                     <li class="navigation__menu--item has-child">
-                                        <a href="{{route('about')}}" class="navigation__menu--item__link">Rooms & Apartments</a>
+                                        <a href="{{route('rooms')}}" class="navigation__menu--item__link">Rooms & Apartments</a>
                                         <ul class="submenu sub__style" role="menu">
                                             <li><a href="{{ route('rooms') }}">Rooms</a></li>
-                                            <li><a href="{{ route('rooms') }}">Apartments</a></li>
+                                            <li><a href="{{ route('apartments') }}">Apartments</a></li>
                                         </ul>
                                     </li>
 
                                     <li class="navigation__menu--item">
-                                        <a href="{{route('activities')}}" class="navigation__menu--item__link">Dining</a>
+                                        <a href="{{route('dining')}}" class="navigation__menu--item__link">Dining</a>
                                     </li>
 
                                     <li class="navigation__menu--item">
-                                        <a href="{{route('activities')}}" class="navigation__menu--item__link">Meetings & Events</a>
+                                        <a href="{{route('meetings-events')}}" class="navigation__menu--item__link">Meetings & Events</a>
                                     </li>
 
                                     <li class="navigation__menu--item">
-                                        <a href="{{route('activities')}}" class="navigation__menu--item__link">SPA & Wellness</a>
+                                        <a href="{{route('spa-wellness')}}" class="navigation__menu--item__link">SPA & Wellness</a>
                                     </li>
 
                                     {{-- <li class="navigation__menu--item has-child">
@@ -765,14 +765,14 @@
     <!-- custom js -->
     <script src="assets/js/main.js"></script>
     <!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
+    <script>
 document.getElementById('application-form').addEventListener('submit', function(e) {
 
     e.preventDefault();
@@ -795,6 +795,57 @@ document.getElementById('application-form').addEventListener('submit', function(
     flatpickr("#check__out", {
         minDate: "today",
         dateFormat: "d M Y"
+    });
+
+    // Home page Swiper carousels
+    document.addEventListener('DOMContentLoaded', function () {
+        if (document.querySelector('.rooms-swiper')) {
+            new Swiper('.rooms-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 24,
+                loop: false,
+                navigation: {
+                    nextEl: '.rooms-swiper-button-next',
+                    prevEl: '.rooms-swiper-button-prev',
+                },
+                pagination: {
+                    el: '.rooms-swiper-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    1200: {
+                        slidesPerView: 2,
+                    },
+                },
+            });
+        }
+
+        if (document.querySelector('.facilities-swiper')) {
+            new Swiper('.facilities-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 24,
+                loop: false,
+                navigation: {
+                    nextEl: '.facilities-swiper-button-next',
+                    prevEl: '.facilities-swiper-button-prev',
+                },
+                pagination: {
+                    el: '.facilities-swiper-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    1200: {
+                        slidesPerView: 2,
+                    },
+                },
+            });
+        }
     });
 
 </script>

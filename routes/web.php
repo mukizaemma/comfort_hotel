@@ -308,8 +308,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/about-us', [App\Http\Controllers\HomeController::class, 'about'])->name('about');
 Route::get('/our-rooms', [App\Http\Controllers\HomeController::class, 'rooms'])->name('rooms');
+Route::get('/our-apartments', [App\Http\Controllers\HomeController::class, 'apartments'])->name('apartments');
 Route::get('/our-rooms/{slug}', [App\Http\Controllers\HomeController::class, 'room'])->name('room');
-Route::get('/our-restaurant', [App\Http\Controllers\HomeController::class, 'restaurant'])->name('restaurant');
+Route::get('/dining', [App\Http\Controllers\HomeController::class, 'restaurant'])->name('dining');
 Route::get('/our-updates', [App\Http\Controllers\HomeController::class, 'updates'])->name('updates');
 Route::get('/our-updates/{slug}', [App\Http\Controllers\HomeController::class, 'update'])->name('update');
 Route::get('/tours', [App\Http\Controllers\HomeController::class, 'tours'])->name('tours');
@@ -324,6 +325,8 @@ Route::get('/facilities', [App\Http\Controllers\HomeController::class, 'faciliti
 Route::get('/facilities/{slug}', [App\Http\Controllers\HomeController::class, 'facility'])->name('facility');
 Route::get('/activities', [App\Http\Controllers\HomeController::class, 'activities'])->name('activities');
 Route::get('/activities/{slug}', [App\Http\Controllers\HomeController::class, 'activity'])->name('activity');
+Route::get('/meetings-events', [App\Http\Controllers\HomeController::class, 'events'])->name('meetings-events');
+Route::get('/spa-wellness', [App\Http\Controllers\HomeController::class, 'spaWellness'])->name('spa-wellness');
 Route::get('/terms-and-conditions', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
 
 // Reviews Routes

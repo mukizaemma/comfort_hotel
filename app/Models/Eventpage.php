@@ -11,6 +11,7 @@ class Eventpage extends Model
     protected $table = 'eventpages';
 
     protected $fillable = [
+        'title',
         'description',
         'details',
         'image',
