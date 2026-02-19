@@ -93,6 +93,11 @@ class HomeController extends Controller
             ->where('room_type', 'room')
             ->oldest()
             ->get();
+        $apartments = Room::with(['amenities', 'images'])
+            ->where('status', 'Active')
+            ->where('room_type', 'apartment')
+            ->oldest()
+            ->get();
         $setting = Setting::first();
         $about = About::first();
         $facilities = Facility::where('status', 'Active')->oldest()->get();
@@ -100,6 +105,7 @@ class HomeController extends Controller
         
         return view('frontend.rooms', [
             'rooms' => $rooms,
+            'apartments' => $apartments,
             'setting' => $setting,
             'about' => $about,
             'facilities' => $facilities,
@@ -163,6 +169,11 @@ class HomeController extends Controller
     public function apartments(Request $request){
         $rooms = Room::with(['amenities', 'images'])
             ->where('status', 'Active')
+            ->where('room_type', 'room')
+            ->oldest()
+            ->get();
+        $apartments = Room::with(['amenities', 'images'])
+            ->where('status', 'Active')
             ->where('room_type', 'apartment')
             ->oldest()
             ->get();
@@ -173,6 +184,7 @@ class HomeController extends Controller
         
         return view('frontend.rooms', [
             'rooms' => $rooms,
+            'apartments' => $apartments,
             'setting' => $setting,
             'about' => $about,
             'facilities' => $facilities,

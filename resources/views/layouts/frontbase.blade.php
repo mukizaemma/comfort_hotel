@@ -803,7 +803,13 @@ document.getElementById('application-form').addEventListener('submit', function(
             new Swiper('.rooms-swiper', {
                 slidesPerView: 1,
                 spaceBetween: 24,
-                loop: false,
+                loop: true,
+                speed: 700,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
                 navigation: {
                     nextEl: '.rooms-swiper-button-next',
                     prevEl: '.rooms-swiper-button-prev',
@@ -811,12 +817,13 @@ document.getElementById('application-form').addEventListener('submit', function(
                 pagination: {
                     el: '.rooms-swiper-pagination',
                     clickable: true,
+                    dynamicBullets: true,
                 },
                 breakpoints: {
-                    768: {
+                    576: {
                         slidesPerView: 2,
                     },
-                    1200: {
+                    992: {
                         slidesPerView: 2,
                     },
                 },
@@ -827,7 +834,13 @@ document.getElementById('application-form').addEventListener('submit', function(
             new Swiper('.facilities-swiper', {
                 slidesPerView: 1,
                 spaceBetween: 24,
-                loop: false,
+                loop: true,
+                speed: 700,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
                 navigation: {
                     nextEl: '.facilities-swiper-button-next',
                     prevEl: '.facilities-swiper-button-prev',
@@ -835,12 +848,13 @@ document.getElementById('application-form').addEventListener('submit', function(
                 pagination: {
                     el: '.facilities-swiper-pagination',
                     clickable: true,
+                    dynamicBullets: true,
                 },
                 breakpoints: {
-                    768: {
+                    576: {
                         slidesPerView: 2,
                     },
-                    1200: {
+                    992: {
                         slidesPerView: 2,
                     },
                 },
