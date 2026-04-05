@@ -5,11 +5,31 @@
             <small class="ms-4"><i class="fa fa-envelope me-2"></i><a href="mailto:{{ $setting->email ?? '' }}">{{ $setting->email ?? '' }}</a></small>
         </div>
         <div class="col-lg-6 px-5 text-end">
-            <small>Follow us:</small>
-            <a class="text-body ms-3" href="{{ $setting->facebook ?? '' }}" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a class="text-body ms-3" href="{{ $setting->twitter ?? '' }}" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a class="text-body ms-3" href="{{ $setting->linkedin ?? '' }}" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-            <a class="text-body ms-3" href="{{ $setting->instagram ?? '' }}" target="_blank"><i class="fab fa-instagram"></i></a>
+            @php
+                $u = function ($v) {
+                    $s = trim((string) ($v ?? ''));
+                    return $s !== '' ? $s : null;
+                };
+                $topSocial = [];
+                if ($x = $u($setting->facebook ?? null)) {
+                    $topSocial[] = ['url' => $x, 'icon' => 'fab fa-facebook-f'];
+                }
+                if ($x = $u($setting->twitter ?? null)) {
+                    $topSocial[] = ['url' => $x, 'icon' => 'fab fa-twitter'];
+                }
+                if ($x = $u($setting->linkedin ?? null)) {
+                    $topSocial[] = ['url' => $x, 'icon' => 'fab fa-linkedin-in'];
+                }
+                if ($x = $u($setting->instagram ?? null)) {
+                    $topSocial[] = ['url' => $x, 'icon' => 'fab fa-instagram'];
+                }
+            @endphp
+            @if(count($topSocial) > 0)
+                <small>Follow us:</small>
+                @foreach($topSocial as $link)
+                    <a class="text-body ms-3" href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer"><i class="{{ $link['icon'] }}"></i></a>
+                @endforeach
+            @endif
         </div>
     </div>
 

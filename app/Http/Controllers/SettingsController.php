@@ -47,6 +47,7 @@ class SettingsController extends Controller
         $data->restaurant_phone = $request->input('restaurant_phone');
         $data->email = $request->input('email');
         $data->facebook = $request->input('facebook');
+        $data->twitter = $request->input('twitter');
         $data->instagram = $request->input('instagram');
         $data->youtube = $request->input('youtube');
         $data->linkedin = $request->input('linkedin');

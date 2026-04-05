@@ -109,45 +109,48 @@
                         @endif
                     </div>
 
-                    <!-- Social Media -->
+                    <!-- Social Media (only icons with non-empty URLs from contact or settings) -->
+                    @php
+                        $socialUrl = function ($value) {
+                            $s = trim((string) ($value ?? ''));
+                            return $s !== '' ? $s : null;
+                        };
+                        $pickSocial = function ($contactField, $settingField) use ($hotelContact, $setting, $socialUrl) {
+                            $fromContact = $hotelContact
+                                ? $socialUrl($hotelContact->{$contactField} ?? null)
+                                : null;
+                            return $fromContact ?: $socialUrl($setting->{$settingField} ?? null);
+                        };
+                        $socialLinks = [];
+                        if ($u = $pickSocial('facebook', 'facebook')) {
+                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-facebook-f', 'color' => '#1877F2'];
+                        }
+                        if ($u = $pickSocial('twitter', 'twitter')) {
+                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-twitter', 'color' => '#1DA1F2'];
+                        }
+                        if ($u = $pickSocial('instagram', 'instagram')) {
+                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-instagram', 'color' => 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)'];
+                        }
+                        if ($u = $pickSocial('linkedin', 'linkedin')) {
+                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-linkedin-in', 'color' => '#0077B5'];
+                        }
+                        if ($u = $socialUrl($setting->youtube ?? null)) {
+                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-youtube', 'color' => '#FF0000'];
+                        }
+                    @endphp
+                    @if(count($socialLinks) > 0)
                     <div class="mt-40">
                         <h5 class="mb-20">Follow Us</h5>
-                        @php
-                            $socialLinks = [];
-                            $facebook  = $hotelContact->facebook  ?? $setting->facebook  ?? null;
-                            $instagram = $hotelContact->instagram ?? $setting->instagram ?? null;
-                            $twitter   = $hotelContact->twitter   ?? $setting->twitter   ?? null;
-                            $linkedin  = $hotelContact->linkedin  ?? $setting->linkedin  ?? null;
-
-                            if ($facebook) {
-                                $socialLinks[] = ['url' => $facebook, 'icon' => 'fab fa-facebook-f', 'color' => '#1877F2'];
-                            }
-                            if ($instagram) {
-                                $socialLinks[] = [
-                                    'url' => $instagram,
-                                    'icon' => 'fab fa-instagram',
-                                    'color' => 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)'
-                                ];
-                            }
-                            if ($twitter) {
-                                $socialLinks[] = ['url' => $twitter, 'icon' => 'fab fa-twitter', 'color' => '#1DA1F2'];
-                            }
-                            if ($linkedin) {
-                                $socialLinks[] = ['url' => $linkedin, 'icon' => 'fab fa-linkedin-in', 'color' => '#0077B5'];
-                            }
-                        @endphp
-
-                        @if(count($socialLinks) > 0)
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                @foreach($socialLinks as $social)
-                                    <a href="{{ $social['url'] }}" target="_blank"
-                                       style="display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: {{ $social['color'] }}; color: white; border-radius: 50%; text-decoration: none; transition: all 0.3s;">
-                                        <i class="{{ $social['icon'] }}"></i>
-                                    </a>
-                                @endforeach
-                            </div>
-                        @endif
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            @foreach($socialLinks as $social)
+                                <a href="{{ $social['url'] }}" target="_blank" rel="noopener noreferrer"
+                                   style="display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: {{ $social['color'] }}; color: white; border-radius: 50%; text-decoration: none; transition: all 0.3s;">
+                                    <i class="{{ $social['icon'] }}"></i>
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
+                    @endif
                 </div>
             </div>
 

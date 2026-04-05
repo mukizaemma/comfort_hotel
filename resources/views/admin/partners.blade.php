@@ -121,7 +121,7 @@
                                 <div class="col-lg-6 col-sm-12">
                                     <label for="projectinput8">Website Url</label>
                                     <input type="text" class="form-control"
-                                    placeholder="Eg: https://www.iremetech.com" name="website">
+                                    placeholder="Eg: https://www.comforthotel.rw" name="website">
                             </div>
                             </div>
 

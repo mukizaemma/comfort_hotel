@@ -147,7 +147,7 @@
                 {{-- <a href="#" class="payment-block">
                     <img src="image/icon/payment.png" alt="">
                 </a> --}}
-                <p class="copyright-text">© <script>document.write(new Date().getFullYear()) </script>, All Right Reserved. <a href="https://iremetech.com" class="author">Delivered By Iremetechnologies</a>.
+                <p class="copyright-text">© <script>document.write(new Date().getFullYear()) </script>, All Right Reserved. <a href="https://comforthotel.rw" class="author">Delivered By Iremetechnologies</a>.
                     </p>
             </div>
         </div>

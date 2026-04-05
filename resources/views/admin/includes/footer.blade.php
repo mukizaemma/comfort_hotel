@@ -5,7 +5,7 @@
                
             </div>
             <div class="col-lg-6 col-sm-6 text-center text-sm-end">
-                &copy; <a href="{{ route('home') }}">Centre ST Paul</a>, All Right Reserved.  <br>Developed By <a href="https://iremetech.com">Ireme Technologies</a>
+                &copy; <a href="{{ route('home') }}">Centre ST Paul</a>, All Right Reserved.  <br>Developed By <a href="https://comforthotel.rw">Comfort Hotel Team</a>
             </br>
 
             </div>

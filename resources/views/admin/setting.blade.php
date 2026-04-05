@@ -109,19 +109,23 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label for="facebook" class="form-label">Facebook</label>
-                                        <input type="text" class="form-control" id="facebook" name="facebook" value="{{ $data->facebook }}">
+                                        <input type="url" class="form-control" id="facebook" name="facebook" value="{{ old('facebook', $data->facebook ?? '') }}" placeholder="https://">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="twitter" class="form-label">Twitter / X</label>
+                                        <input type="url" class="form-control" id="twitter" name="twitter" value="{{ old('twitter', $data->twitter ?? '') }}" placeholder="https://">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="instagram" class="form-label">Instagram</label>
-                                        <input type="text" class="form-control" id="instagram" name="instagram" value="{{ $data->instagram }}">
+                                        <input type="url" class="form-control" id="instagram" name="instagram" value="{{ old('instagram', $data->instagram ?? '') }}" placeholder="https://">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="youtube" class="form-label">YouTube</label>
-                                        <input type="text" class="form-control" id="youtube" name="youtube" value="{{ $data->youtube }}">
+                                        <input type="url" class="form-control" id="youtube" name="youtube" value="{{ old('youtube', $data->youtube ?? '') }}" placeholder="https://">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="linkedin" class="form-label">LinkedIn</label>
-                                        <input type="text" class="form-control" id="linkedin" name="linkedin" value="{{ $data->linkedin }}">
+                                        <input type="url" class="form-control" id="linkedin" name="linkedin" value="{{ old('linkedin', $data->linkedin ?? '') }}" placeholder="https://">
                                     </div>
                                     <div class="col-12">
                                         <label for="linktree" class="form-label">Booking link</label>

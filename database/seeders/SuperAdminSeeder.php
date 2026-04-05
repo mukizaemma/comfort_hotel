@@ -19,11 +19,11 @@ class SuperAdminSeeder extends Seeder
 
         if ($superAdminRole) {
             User::updateOrCreate(
-                ['email' => 'admin@iremetech.com'],
+                ['email' => 'admin@comforthotel.rw'],
                 [
                     'name' => 'Super Admin',
                     'user_id' => Uuid::uuid4(),
-                    'email' => 'admin@iremetech.com',
+                    'email' => 'admin@comforthotel.rw',
                     'password' => Hash::make('Ireme@2021'),
                     'role_id' => $superAdminRole->id,
                     'status' => 'Active',

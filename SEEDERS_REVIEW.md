@@ -39,7 +39,7 @@
 ### 1. **UsersSeeder** ❌ DELETED
 - **Reason**: 
   - Uses old `role` column (should use `role_id`)
-  - Creates user with old email (`admin@iremetech.com`)
+  - Creates user with old email (`admin@comforthotel.rw`)
   - Replaced by `SuperAdminSeeder` which is more appropriate
 - **Status**: ❌ REMOVED
 

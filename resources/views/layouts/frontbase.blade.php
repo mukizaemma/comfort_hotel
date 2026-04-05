@@ -656,45 +656,24 @@
 
                         @php
                             $socialLinks = [];
-                            if (!empty($setting->facebook)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->facebook,
-                                    'icon' => 'fab fa-facebook-f',
-                                    'label' => 'Facebook',
-                                    'color' => '#1877F2',
-                                ];
+                            $socialUrl = function ($value) {
+                                $s = trim((string) ($value ?? ''));
+                                return $s !== '' ? $s : null;
+                            };
+                            if ($u = $socialUrl($setting->facebook ?? null)) {
+                                $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-facebook-f', 'label' => 'Facebook', 'color' => '#1877F2'];
                             }
-                            if (!empty($setting->twitter)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->twitter,
-                                    'icon' => 'fab fa-twitter',
-                                    'label' => 'Twitter',
-                                    'color' => '#1DA1F2',
-                                ];
+                            if ($u = $socialUrl($setting->twitter ?? null)) {
+                                $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-twitter', 'label' => 'Twitter', 'color' => '#1DA1F2'];
                             }
-                            if (!empty($setting->instagram)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->instagram,
-                                    'icon' => 'fab fa-instagram',
-                                    'label' => 'Instagram',
-                                    'color' => 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)',
-                                ];
+                            if ($u = $socialUrl($setting->instagram ?? null)) {
+                                $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-instagram', 'label' => 'Instagram', 'color' => 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)'];
                             }
-                            if (!empty($setting->youtube)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->youtube,
-                                    'icon' => 'fab fa-youtube',
-                                    'label' => 'YouTube',
-                                    'color' => '#FF0000',
-                                ];
+                            if ($u = $socialUrl($setting->youtube ?? null)) {
+                                $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-youtube', 'label' => 'YouTube', 'color' => '#FF0000'];
                             }
-                            if (!empty($setting->linkedin)) {
-                                $socialLinks[] = [
-                                    'url' => $setting->linkedin,
-                                    'icon' => 'fab fa-linkedin-in',
-                                    'label' => 'LinkedIn',
-                                    'color' => '#0077B5',
-                                ];
+                            if ($u = $socialUrl($setting->linkedin ?? null)) {
+                                $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-linkedin-in', 'label' => 'LinkedIn', 'color' => '#0077B5'];
                             }
                         @endphp
 
@@ -726,7 +705,7 @@
             <div class="container">
                 <div class="row">
                     <div class="copyright__wrapper" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                        <p class="mb-0">© <span id="year"></span> {{ $setting->company }}. All rights reserved. delivered by <a href="https://iremetech.com" target="_blank">Ireme Technologies</a> </p>
+                        <p class="mb-0">© <span id="year"></span> {{ $setting->company }}. All rights reserved. delivered by <a href="https://comforthotel.rw" target="_blank">Comfort Hotel Team</a> </p>
                     </div>
                 </div>
             </div>
@@ -761,7 +740,6 @@
 
     <!-- plugin js -->
     <script src="assets/js/plugins.min.js"></script>
-    <script src="assets/js/gdpr.js"></script>
     <!-- custom js -->
     <script src="assets/js/main.js"></script>
     <!-- Swiper JS -->
