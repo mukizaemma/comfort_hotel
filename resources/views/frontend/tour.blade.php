@@ -171,72 +171,10 @@
               <div class="booking__wrapper booking__wrapper--has-shadow bg-section-color">
                 <div class="row">
                   <div class="col-12">
-                    <h4 class="text-center">Make an Enquiry</h4>
-
-                  <form class="booking__form" action="{{ route('savePartner') }}" method="POST"
-                      enctype="multipart/form-data">
-                      @csrf
-
-                      <div class="row justify-content-center g-4">
-                        <div class="col-12">
-                          <div class="booking__form-inputgroup">
-                            <div class="booking__form-input">
-                              <select class="nice-selct wide form-select" aria-label="Default select example" id="booking-field-4" name="trip_id">
-                                <option selected disabled>-- Select Trip --</option>
-                                  @foreach ($allTrips as $trip)
-                                  <option value="{{ $trip->id }}">{{ $trip->title }}</option>
-                                  @endforeach
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <div class="booking__form-inputgroup">
-                            <div class="booking__form-input">
-                              <input type="text" class="form-control" placeholder="Names" name="names" required>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <div class="booking__form-inputgroup">
-                            <div class="booking__form-input">
-                              <input type="text" class="form-control" placeholder="Phone" name="phone" required>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <div class="booking__form-inputgroup">
-                            <div class="booking__form-input">
-                              <input type="email" class="form-control" placeholder="Email" name="email" required>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <div class="booking__form-inputgroup">
-                            <div class="booking__form-date">
-                              <input type="text" class="date-input form-control" placeholder="Tour day" name="date_in" required>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <input type="number" class="date-inputs form-control" min="0" value="0" placeholder="Number of Guests" name="guests" required>
-                      
-                        </div>
-                        <div class="col-12">
-                          <textarea id="programDescription" rows="5" class="form-control" name="message" placeholder="Your Message"></textarea>
-                      
-                        </div>
-                        <div class="col-12">
-                         <script src='https://www.google.com/recaptcha/api.js'></script>
-                          <div class="g-recaptcha" data-sitekey="6LdtLgkqAAAAAIb0bEQt16PF0YMGQXHaQlO5Ty3x"></div>
-                        </div>
-                        <div class="col-12">
-                          <div class="booking__form-btn">
-                            <button class="custom-btn custom-btn--fluid" type="submit"><span>Book Now</span></button>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
+                    @include('frontend.includes.booking-contact-cta', [
+                      'ctaTitle' => 'Book your tour stay',
+                      'ctaDescription' => 'Reserve your stay on Booking.com and contact us for tour planning support.'
+                    ])
                  </div>
                 </div>
               </div>

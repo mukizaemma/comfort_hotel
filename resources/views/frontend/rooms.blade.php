@@ -68,7 +68,7 @@
                                 <div class="room__card__meta__info mb-3 flex-grow-1">
                                     <p class="font-sm text-muted mb-0">{!! Str::words(strip_tags($room->description ?? ''), 20, '...') !!}</p>
                                 </div>
-                                <a href="{{ route('room', ['slug' => $room->slug]) }}#booking" class="theme-btn btn-style fill align-self-start">
+                                <a href="{{ route('connect') }}" class="theme-btn btn-style fill align-self-start">
                                     <span>View details &amp; Book</span>
                                 </a>
                             </div>
@@ -101,7 +101,7 @@
                                 <div class="room__card__meta__info mb-3 flex-grow-1">
                                     <p class="font-sm text-muted mb-0">{!! Str::words(strip_tags($room->description ?? ''), 20, '...') !!}</p>
                                 </div>
-                                <a href="{{ route('room', ['slug' => $room->slug]) }}#booking" class="theme-btn btn-style fill align-self-start">
+                                <a href="{{ route('connect') }}" class="theme-btn btn-style fill align-self-start">
                                     <span>View details &amp; Book</span>
                                 </a>
                             </div>

@@ -150,103 +150,10 @@
         <!-- Booking Form Section -->
         <div class="row mt-50" id="booking">
             <div class="col-lg-8 mx-auto">
-                <div class="rts__booking__form has__background" style="padding: 40px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    <h3 class="mb-30 text-center">Book This Room</h3>
-                    <form action="{{ route('bookNow') }}" method="POST" id="bookingForm">
-                        @csrf
-                        <input type="hidden" name="room_id" value="{{ $room->id }}">
-                        
-                        <div class="row g-20">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Check In <span class="text-danger">*</span></label>
-                                <input type="date" 
-                                       id="checkin_date" 
-                                       name="checkin" 
-                                       class="form-control" 
-                                       required 
-                                       min="{{ date('Y-m-d') }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Check Out <span class="text-danger">*</span></label>
-                                <input type="date" 
-                                       id="checkout_date" 
-                                       name="checkout" 
-                                       class="form-control" 
-                                       required 
-                                       min="{{ date('Y-m-d') }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Adults <span class="text-danger">*</span></label>
-                                <input type="number" 
-                                       id="adults" 
-                                       name="adults" 
-                                       class="form-control" 
-                                       min="1" 
-                                       value="1" 
-                                       required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Children</label>
-                                <input type="number" 
-                                       id="children" 
-                                       name="children" 
-                                       class="form-control" 
-                                       min="0" 
-                                       value="0">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Your Name <span class="text-danger">*</span></label>
-                                <input type="text" name="names" class="form-control" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Phone <span class="text-danger">*</span></label>
-                                <input type="text" name="phone" class="form-control" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Number of Rooms</label>
-                                <input type="number" name="rooms" class="form-control" min="1" value="1">
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Special Requests</label>
-                                <textarea name="message" class="form-control" rows="3" placeholder="Any special requests or notes..."></textarea>
-                            </div>
-                            
-                            <!-- Price Calculation Display -->
-                            <div class="col-12 mb-3" style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                    <span><strong>Room Price per Night:</strong></span>
-                                    <span id="room_price">${{ number_format($room->price, 2) }}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                    <span><strong>Number of Nights:</strong></span>
-                                    <span id="nights_count">0</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-top: 10px; border-top: 2px solid #ddd;">
-                                    <span><strong>Subtotal:</strong></span>
-                                    <span id="subtotal">$0.00</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                    <span>Tax (10%):</span>
-                                    <span id="tax">$0.00</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; padding-top: 10px; border-top: 2px solid #2176af; font-size: 18px; font-weight: 600;">
-                                    <span><strong>Total Amount:</strong></span>
-                                    <span id="total_amount" style="color: #2176af;">$0.00</span>
-                                </div>
-                            </div>
-
-                            <div class="col-12 text-center">
-                                <button type="submit" class="theme-btn btn-style fill" style="width: 100%; padding: 15px; font-size: 18px;">
-                                    <span>Complete Booking</span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                @include('frontend.includes.booking-contact-cta', [
+                    'ctaTitle' => 'Book this room',
+                    'ctaDescription' => 'Use Booking.com for live availability and secure confirmation, then contact us directly for help.'
+                ])
             </div>
         </div>
     </div>
@@ -299,60 +206,6 @@
 <!-- Similar Rooms End -->
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const checkinInput = document.getElementById('checkin_date');
-    const checkoutInput = document.getElementById('checkout_date');
-    const roomPrice = {{ $room->price }};
-    const subtotalEl = document.getElementById('subtotal');
-    const taxEl = document.getElementById('tax');
-    const totalEl = document.getElementById('total_amount');
-    const nightsEl = document.getElementById('nights_count');
-
-    function calculateTotal() {
-        const checkin = new Date(checkinInput.value);
-        const checkout = new Date(checkoutInput.value);
-        
-        if (checkin && checkout && checkout > checkin) {
-            const diffTime = Math.abs(checkout - checkin);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            const nights = diffDays;
-            
-            nightsEl.textContent = nights + ' night' + (nights !== 1 ? 's' : '');
-            
-            const subtotal = roomPrice * nights;
-            const tax = subtotal * 0.10;
-            const total = subtotal + tax;
-            
-            subtotalEl.textContent = '$' + subtotal.toFixed(2);
-            taxEl.textContent = '$' + tax.toFixed(2);
-            totalEl.textContent = '$' + total.toFixed(2);
-        } else {
-            nightsEl.textContent = '0';
-            subtotalEl.textContent = '$0.00';
-            taxEl.textContent = '$0.00';
-            totalEl.textContent = '$0.00';
-        }
-    }
-
-    checkinInput.addEventListener('change', function() {
-        if (checkoutInput.value) {
-            checkoutInput.min = this.value;
-            calculateTotal();
-        }
-    });
-
-    checkoutInput.addEventListener('change', function() {
-        if (checkinInput.value) {
-            if (this.value <= checkinInput.value) {
-                alert('Check-out date must be after check-in date');
-                this.value = '';
-                return;
-            }
-            calculateTotal();
-        }
-    });
-});
-
 // Image Gallery Functionality
 document.addEventListener('DOMContentLoaded', function() {
     const mainImage = document.getElementById('roomMainImage');

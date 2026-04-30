@@ -163,82 +163,10 @@
                 </div>
             </div>
             <div class="col-lg-6 wow fadeInRight">
-                <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); height: 100%;">
-                    <h3 style="margin-bottom: 20px; color: #2176af; font-family: 'Gilda Display', serif;">Book Your Stay</h3>
-                    <p class="font-sm" style="margin-bottom: 30px; color: #666;">
-                        Reserve your perfect room today and experience luxury hospitality at its finest.
-                    </p>
-                    @if(session('success'))
-                        <div class="alert alert-success" style="padding: 15px; margin-bottom: 20px; border-radius: 5px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
-                            {{ session('success') }}
-                                    </div>
-                    @endif
-                    @if(session('error'))
-                        <div class="alert alert-danger" style="padding: 15px; margin-bottom: 20px; border-radius: 5px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
-                            {{ session('error') }}
-                                            </div>
-                    @endif
-                    @if($errors->any())
-                        <div class="alert alert-danger" style="padding: 15px; margin-bottom: 20px; border-radius: 5px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
-                            <ul style="margin: 0; padding-left: 20px;">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                                                </div>
-                    @endif
-                    <form action="{{ route('bookNow') }}" method="POST" class="booking__form">
-                        @csrf
-                        <div class="form-group mb-3">
-                            <label for="room_id" class="form-label" style="font-weight: 600; margin-bottom: 8px;">Select Room <span style="color: red;">*</span></label>
-                            <select name="room_id" id="room_id" class="form-control" required style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-                                <option value="">-- Select a Room --</option>
-                                @foreach($allRooms as $roomOption)
-                                    <option value="{{ $roomOption->id }}">{{ $roomOption->title }} - ${{ number_format($roomOption->price, 0) }}/Night</option>
-                                @endforeach
-                            </select>
-                                            </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="checkin" class="form-label" style="font-weight: 600; margin-bottom: 8px;">Check-In Date <span style="color: red;">*</span></label>
-                                <input type="date" name="checkin" id="checkin" class="form-control" required min="{{ date('Y-m-d') }}" style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-                                        </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="checkout" class="form-label" style="font-weight: 600; margin-bottom: 8px;">Check-Out Date <span style="color: red;">*</span></label>
-                                <input type="date" name="checkout" id="checkout" class="form-control" required min="{{ date('Y-m-d', strtotime('+1 day')) }}" style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-                                    </div>
-                                </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="adults" class="form-label" style="font-weight: 600; margin-bottom: 8px;">Adults <span style="color: red;">*</span></label>
-                                <input type="number" name="adults" id="adults" class="form-control" required min="1" value="1" style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="children" class="form-label" style="font-weight: 600; margin-bottom: 8px;">Children</label>
-                                <input type="number" name="children" id="children" class="form-control" min="0" value="0" style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-                                                </div>
-                                            </div>
-                        <div class="form-group mb-3">
-                            <label for="names" class="form-label" style="font-weight: 600; margin-bottom: 8px;">Full Name <span style="color: red;">*</span></label>
-                            <input type="text" name="names" id="names" class="form-control" required style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-                                        </div>
-                        <div class="form-group mb-3">
-                            <label for="email" class="form-label" style="font-weight: 600; margin-bottom: 8px;">Email <span style="color: red;">*</span></label>
-                            <input type="email" name="email" id="email" class="form-control" required style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-                                    </div>
-                        <div class="form-group mb-3">
-                            <label for="phone" class="form-label" style="font-weight: 600; margin-bottom: 8px;">Phone <span style="color: red;">*</span></label>
-                            <input type="tel" name="phone" id="phone" class="form-control" required style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-                                </div>
-                        <div class="form-group mb-4">
-                            <label for="message" class="form-label" style="font-weight: 600; margin-bottom: 8px;">Special Requests</label>
-                            <textarea name="message" id="message" class="form-control" rows="3" style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
-                        </div>
-                        <button type="submit" class="theme-btn btn-style fill w-100" style="padding: 15px; font-size: 16px; font-weight: 600;">
-                            <span>Submit Booking Request</span>
-                        </button>
-                    </form>
-                </div>
+                @include('frontend.includes.booking-contact-cta', [
+                    'ctaTitle' => 'Book your stay',
+                    'ctaDescription' => 'Choose Booking.com for reservations, or contact us directly for guidance and special requests.'
+                ])
             </div>
         </div>
     </div>

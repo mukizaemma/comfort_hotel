@@ -62,39 +62,10 @@
     <div class="container">
         <div class="row g-30">
             <div class="col-lg-7">
-                <div class="contact-action-card">
-                    <span class="contact-action-chip"><i class="fas fa-comment-dots"></i> Contact us</span>
-                    <h3 class="mt-3 mb-2">We're here to help</h3>
-                    <p class="mb-3" style="color:#4b5563;">
-                        For reservations we use <strong>Booking.com</strong>. For other questions - events, facilities, or special arrangements - message us on WhatsApp or email us directly.
-                    </p>
-                    <p class="mb-4" style="font-size:14px;color:#6b7280;">
-                        Reservations are managed securely on Booking.com. For other questions, reach us on WhatsApp or email.
-                    </p>
-
-                    @if(!empty($bookingUrl))
-                        <a href="{{ $bookingUrl }}" target="_blank" rel="noopener noreferrer" class="contact-action-btn primary mb-2">
-                            <span>Book on Booking.com</span>
-                        </a>
-                    @endif
-
-                    <div class="row g-2">
-                        @if(!empty($whatsDigits))
-                            <div class="col-md-6">
-                                <a href="https://wa.me/{{ $whatsDigits }}" target="_blank" rel="noopener noreferrer" class="contact-action-btn whatsapp">
-                                    <i class="fab fa-whatsapp me-2"></i><span>WhatsApp</span>
-                                </a>
-                            </div>
-                        @endif
-                        @if(!empty($emailAddress))
-                            <div class="col-md-6">
-                                <a href="mailto:{{ $emailAddress }}" class="contact-action-btn secondary">
-                                    <i class="fas fa-envelope me-2"></i><span>Email us</span>
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                </div>
+                @include('frontend.includes.booking-contact-cta', [
+                    'ctaTitle' => 'We are here to help',
+                    'ctaDescription' => 'For reservations we use Booking.com. For events, facilities, and special requests, contact us directly.'
+                ])
             </div>
             <div class="col-lg-5">
                 <div class="contact-action-card" style="padding:0; overflow:hidden;">
