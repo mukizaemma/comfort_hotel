@@ -16,6 +16,7 @@ class Setting extends Model
         'address',
         'email',
         'phone',
+        'whatsapp_phone',
         'reception_phone',
         'manager_phone',
         'restaurant_phone',

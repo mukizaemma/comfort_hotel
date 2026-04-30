@@ -59,11 +59,22 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label for="phone" class="form-label">Phone</label>
-                                        <input type="text" class="form-control" id="phone" name="phone" value="{{ $data->phone }}">
+                                        <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', $data->phone ?? '') }}" placeholder="Main switchboard / general line">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="email" class="form-label">Email</label>
                                         <input type="email" class="form-control" id="email" name="email" value="{{ $data->email }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="whatsapp_phone" class="form-label">WhatsApp number</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="whatsapp_phone"
+                                            name="whatsapp_phone"
+                                            value="{{ old('whatsapp_phone', $data->whatsapp_phone ?? '') }}"
+                                            placeholder="e.g. +250 788 123 456">
+                                        <small class="text-muted">Used for the floating WhatsApp button and all WhatsApp links on the public site. Include country code.</small>
                                     </div>
                                 </div>
                                 <div class="row g-3 mt-1">

@@ -3,11 +3,20 @@
     $ctaDescription = $ctaDescription ?? 'For reservations, use Booking.com. For direct assistance, contact us via WhatsApp, phone, or email.';
     $hotelContact = $hotelContact ?? \App\Models\HotelContact::first();
     $bookingUrl = trim((string) ($setting->linktree ?? ''));
-    $phoneRaw = $hotelContact->phone ?? $setting->phone ?? '';
+    $phoneRaw = optional($hotelContact)->phone ?? $setting->phone ?? '';
     $phoneDigits = preg_replace('/\D+/', '', (string) $phoneRaw);
-    $whatsappRaw = $hotelContact->whatsapp ?? $phoneRaw;
+    $whatsappRaw = trim((string) ($setting->whatsapp_phone ?? ''));
+    if ($whatsappRaw === '') {
+        $whatsappRaw = trim((string) (optional($hotelContact)->whatsapp ?? ''));
+    }
+    if ($whatsappRaw === '') {
+        $whatsappRaw = trim((string) ($setting->reception_phone ?? ''));
+    }
+    if ($whatsappRaw === '') {
+        $whatsappRaw = $phoneRaw;
+    }
     $whatsappDigits = preg_replace('/\D+/', '', (string) $whatsappRaw);
-    $emailAddress = $hotelContact->email ?? $setting->email ?? '';
+    $emailAddress = optional($hotelContact)->email ?? $setting->email ?? '';
 @endphp
 
 @once

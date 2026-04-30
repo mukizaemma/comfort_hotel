@@ -38,13 +38,8 @@
 
 @php
     $hotelContact = $hotelContact ?? \App\Models\HotelContact::first();
-    $bookingUrl = trim((string) ($setting->linktree ?? ''));
     $googleReviewsUrl = trim((string) ($setting->google_reviews_url ?? ''));
     $tripadvisorReviewsUrl = trim((string) ($setting->tripadvisor_reviews_url ?? ''));
-    $phoneRaw = $hotelContact->phone ?? $setting->phone ?? '';
-    $whatsRaw = $hotelContact->whatsapp ?? $phoneRaw;
-    $whatsDigits = preg_replace('/\D+/', '', (string) $whatsRaw);
-    $emailAddress = $hotelContact->email ?? $setting->email ?? '';
 @endphp
 
 <style>

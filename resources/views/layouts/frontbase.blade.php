@@ -167,6 +167,38 @@
             transform: none;
             transition: opacity 0.5s ease-out 0.15s, visibility 0.5s 0.15s;
         }
+        .floating-whatsapp {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #25D366;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+            z-index: 1200;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .floating-whatsapp:hover {
+            transform: translateY(-2px) scale(1.03);
+            color: #fff;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+        }
+        @media (max-width: 767.98px) {
+            .floating-whatsapp {
+                left: 14px;
+                bottom: 14px;
+                width: 52px;
+                height: 52px;
+                font-size: 24px;
+            }
+        }
     </style>
 
 </head>
@@ -735,6 +767,28 @@
 
     </button>
     <!-- back to top end -->
+
+    @php
+        $waSetting = trim((string) ($setting->whatsapp_phone ?? ''));
+        $hotelContactFloat = \App\Models\HotelContact::first();
+        $waRaw = $waSetting !== '' ? $waSetting : trim((string) (optional($hotelContactFloat)->whatsapp ?? ''));
+        if ($waRaw === '') {
+            $waRaw = trim((string) ($setting->reception_phone ?? ''));
+        }
+        if ($waRaw === '') {
+            $waRaw = trim((string) ($setting->phone ?? ''));
+        }
+        $whatsAppNumber = preg_replace('/\D+/', '', (string) $waRaw);
+    @endphp
+    @if(!empty($whatsAppNumber))
+        <a href="https://wa.me/{{ $whatsAppNumber }}"
+           class="floating-whatsapp"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Chat on WhatsApp">
+            <i class="fab fa-whatsapp" aria-hidden="true"></i>
+        </a>
+    @endif
 
 
     <!-- Custom preloader: animated logo -->
