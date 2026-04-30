@@ -42,14 +42,19 @@
                                     </video>
                                 @endif
                             @elseif($slide->video_file)
-                                <video autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                                <video autoplay muted loop playsinline preload="{{ $loop->first ? 'metadata' : 'none' }}" style="width: 100%; height: 100%; object-fit: cover;">
                                     <source src="{{ asset('storage/' . $slide->video_file) }}" type="video/mp4">
                                     <source src="{{ asset('storage/' . $slide->video_file) }}" type="video/webm">
                                     <source src="{{ asset('storage/' . $slide->video_file) }}" type="video/ogg">
                                 </video>
                             @endif
                         @else
-                            <img src="{{ asset('storage/' . ($slide->image ?? 'slides/default.jpg')) }}" alt="{{ $slide->heading ?? 'Slide' }}" loading="lazy">
+                            <img
+                                src="{{ asset('storage/' . ($slide->image ?? 'slides/default.jpg')) }}"
+                                alt="{{ $slide->heading ?? 'Slide' }}"
+                                loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                                fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
+                                decoding="async">
                         @endif
                     </div>
                     <div class="container">

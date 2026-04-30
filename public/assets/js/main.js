@@ -504,9 +504,27 @@
         }
       },
       preloader: function (e){
-        window.addEventListener('load',function(){
-          document.querySelector('body').classList.add("loaded")  
-        });     
+        var hidePreloader = function () {
+          if (!document.body.classList.contains("loaded")) {
+            document.body.classList.add("loaded");
+          }
+        };
+
+        // Show page as soon as DOM is ready (do not wait for all images/videos).
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", hidePreloader, { once: true });
+        } else {
+          hidePreloader();
+        }
+
+        // Keep legacy load listener as backup.
+        window.addEventListener("load", hidePreloader, { once: true });
+
+        // Hard timeout fallback for very slow/broken assets on production.
+        setTimeout(hidePreloader, 1800);
+
+        // Ensure preloader is removed when page is restored from bfcache.
+        window.addEventListener("pageshow", hidePreloader, { once: true });
       },
 
       date: function (e) {
