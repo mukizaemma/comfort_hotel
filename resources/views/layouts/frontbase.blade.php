@@ -587,6 +587,20 @@
                                 <strong>{{ $reviewCount }} </strong> Reviews | <span style="text-decoration: underline;">View All Reviews</span>
                             </a>
                         </div>
+                        @if(!empty($setting->google_reviews_url) || !empty($setting->tripadvisor_reviews_url))
+                            <div class="mt-2 d-flex flex-wrap gap-2">
+                                @if(!empty($setting->google_reviews_url))
+                                    <a href="{{ $setting->google_reviews_url }}" target="_blank" rel="noopener noreferrer" class="link__item" style="color: #ffffff; text-decoration: underline;">
+                                        Google Reviews
+                                    </a>
+                                @endif
+                                @if(!empty($setting->tripadvisor_reviews_url))
+                                    <a href="{{ $setting->tripadvisor_reviews_url }}" target="_blank" rel="noopener noreferrer" class="link__item" style="color: #ffffff; text-decoration: underline;">
+                                        Tripadvisor Reviews
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                     <div class="rts__widget">
                         <span class="widget__title">Hotel Facilities</span>

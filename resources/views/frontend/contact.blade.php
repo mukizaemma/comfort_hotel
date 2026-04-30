@@ -36,173 +36,68 @@
 </div>
 <!-- Page Header End -->
 
-<!-- Contact Section -->
-<div class="rts__section section__padding">
+@php
+    $hotelContact = $hotelContact ?? \App\Models\HotelContact::first();
+    $bookingUrl = trim((string) ($setting->linktree ?? ''));
+    $googleReviewsUrl = trim((string) ($setting->google_reviews_url ?? ''));
+    $tripadvisorReviewsUrl = trim((string) ($setting->tripadvisor_reviews_url ?? ''));
+    $phoneRaw = $hotelContact->phone ?? $setting->phone ?? '';
+    $whatsRaw = $hotelContact->whatsapp ?? $phoneRaw;
+    $whatsDigits = preg_replace('/\D+/', '', (string) $whatsRaw);
+    $emailAddress = $hotelContact->email ?? $setting->email ?? '';
+@endphp
+
+<style>
+    .contact-action-card { background: #fff; border: 1px solid #e9edf3; border-radius: 14px; box-shadow: 0 8px 24px rgba(16,24,40,.06); padding: 24px; }
+    .contact-action-chip { display: inline-flex; align-items: center; gap: 8px; background: #eef4ff; color: #1e5fbf; border: 1px solid #d7e5ff; border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 600; }
+    .contact-action-btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 46px; border-radius: 8px; font-weight: 600; border: 1px solid transparent; transition: .2s ease; text-decoration: none; }
+    .contact-action-btn.primary { background: #165fc2; color: #fff; }
+    .contact-action-btn.whatsapp { background: #22c55e; color: #fff; }
+    .contact-action-btn.secondary { background: #fff; color: #165fc2; border-color: #9db7e5; }
+    .contact-action-btn:hover { transform: translateY(-1px); color: inherit; }
+</style>
+
+<!-- Contact/Booking Section -->
+<div class="rts__section section__padding" style="background:#f6f8fb;">
     <div class="container">
         <div class="row g-30">
-            <!-- Hotel Contact Information -->
-            <div class="col-lg-4">
-                <div style="background: #f9f9f9; padding: 40px; border-radius: 10px; height: 100%;">
-                    <h3 class="mb-30">Hotel Contact Information</h3>
-                    
-                    @php
-                        $hotelContact = \App\Models\HotelContact::first();
-                    @endphp
-                    
-                    <div style="margin-bottom: 30px;">
-                        <div style="display: flex; align-items: start; margin-bottom: 20px;">
-                            <i class="flaticon-phone-flip" style="font-size: 24px; color: #2176af; margin-right: 15px; margin-top: 5px;"></i>
-                            <div>
-                                <p class="mb-0">
-                                    <a href="tel:{{ $hotelContact->phone ?? $setting->phone ?? '' }}" style="color: #666; text-decoration: none;">
-                                        {{ $hotelContact->phone ?? $setting->phone ?? 'N/A' }}
-                                    </a>
-                                </p>
-                                @if($hotelContact && $hotelContact->whatsapp)
-                                <p class="mb-0 mt-2">
-                                    <a href="https://wa.me/{{ $hotelContact->whatsapp }}" target="_blank" style="color: #25D366; text-decoration: none;">
-                                        <i class="fab fa-whatsapp"></i> WhatsApp: {{ $hotelContact->whatsapp }}
-                                    </a>
-                                </p>
-                                @endif
-                            </div>
-                        </div>
+            <div class="col-lg-7">
+                <div class="contact-action-card">
+                    <span class="contact-action-chip"><i class="fas fa-comment-dots"></i> Contact us</span>
+                    <h3 class="mt-3 mb-2">We're here to help</h3>
+                    <p class="mb-3" style="color:#4b5563;">
+                        For reservations we use <strong>Booking.com</strong>. For other questions - events, facilities, or special arrangements - message us on WhatsApp or email us directly.
+                    </p>
+                    <p class="mb-4" style="font-size:14px;color:#6b7280;">
+                        Reservations are managed securely on Booking.com. For other questions, reach us on WhatsApp or email.
+                    </p>
 
-                        <div style="display: flex; align-items: start; margin-bottom: 20px;">
-                            <i class="flaticon-envelope" style="font-size: 24px; color: #2176af; margin-right: 15px; margin-top: 5px;"></i>
-                            <div>
-                                <p class="mb-0">
-                                    <a href="mailto:{{ $hotelContact->email ?? $setting->email ?? '' }}" style="color: #666; text-decoration: none;">
-                                        {{ $hotelContact->email ?? $setting->email ?? 'N/A' }}
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
+                    @if(!empty($bookingUrl))
+                        <a href="{{ $bookingUrl }}" target="_blank" rel="noopener noreferrer" class="contact-action-btn primary mb-2">
+                            <span>Book on Booking.com</span>
+                        </a>
+                    @endif
 
-                        <div style="display: flex; align-items: start; margin-bottom: 20px;">
-                            <i class="flaticon-marker" style="font-size: 24px; color: #2176af; margin-right: 15px; margin-top: 5px;"></i>
-                            <div>
-                                <p class="mb-0" style="color: #666; line-height: 1.6;">
-                                    @if($hotelContact)
-                                        {{ $hotelContact->address ?? '' }}<br>
-                                        @if($hotelContact->city){{ $hotelContact->city }}, @endif
-                                        @if($hotelContact->country){{ $hotelContact->country }}@endif
-                                        @if($hotelContact->postal_code) - {{ $hotelContact->postal_code }}@endif
-                                    @else
-                                        {{ $setting->address ?? 'N/A' }}
-                                    @endif
-                                </p>
+                    <div class="row g-2">
+                        @if(!empty($whatsDigits))
+                            <div class="col-md-6">
+                                <a href="https://wa.me/{{ $whatsDigits }}" target="_blank" rel="noopener noreferrer" class="contact-action-btn whatsapp">
+                                    <i class="fab fa-whatsapp me-2"></i><span>WhatsApp</span>
+                                </a>
                             </div>
-                        </div>
-
-                        @if($hotelContact && $hotelContact->website)
-                        <div style="display: flex; align-items: start;">
-                            <i class="fas fa-globe" style="font-size: 24px; color: #2176af; margin-right: 15px; margin-top: 5px;"></i>
-                            <div>
-                                <p class="mb-0">
-                                    <a href="{{ $hotelContact->website }}" target="_blank" style="color: #666; text-decoration: none;">
-                                        {{ $hotelContact->website }}
-                                    </a>
-                                </p>
+                        @endif
+                        @if(!empty($emailAddress))
+                            <div class="col-md-6">
+                                <a href="mailto:{{ $emailAddress }}" class="contact-action-btn secondary">
+                                    <i class="fas fa-envelope me-2"></i><span>Email us</span>
+                                </a>
                             </div>
-                        </div>
                         @endif
                     </div>
-
-                    <!-- Social Media (only icons with non-empty URLs from contact or settings) -->
-                    @php
-                        $socialUrl = function ($value) {
-                            $s = trim((string) ($value ?? ''));
-                            return $s !== '' ? $s : null;
-                        };
-                        $pickSocial = function ($contactField, $settingField) use ($hotelContact, $setting, $socialUrl) {
-                            $fromContact = $hotelContact
-                                ? $socialUrl($hotelContact->{$contactField} ?? null)
-                                : null;
-                            return $fromContact ?: $socialUrl($setting->{$settingField} ?? null);
-                        };
-                        $socialLinks = [];
-                        if ($u = $pickSocial('facebook', 'facebook')) {
-                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-facebook-f', 'color' => '#1877F2'];
-                        }
-                        if ($u = $pickSocial('twitter', 'twitter')) {
-                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-twitter', 'color' => '#1DA1F2'];
-                        }
-                        if ($u = $pickSocial('instagram', 'instagram')) {
-                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-instagram', 'color' => 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)'];
-                        }
-                        if ($u = $pickSocial('linkedin', 'linkedin')) {
-                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-linkedin-in', 'color' => '#0077B5'];
-                        }
-                        if ($u = $socialUrl($setting->youtube ?? null)) {
-                            $socialLinks[] = ['url' => $u, 'icon' => 'fab fa-youtube', 'color' => '#FF0000'];
-                        }
-                    @endphp
-                    @if(count($socialLinks) > 0)
-                    <div class="mt-40">
-                        <h5 class="mb-20">Follow Us</h5>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            @foreach($socialLinks as $social)
-                                <a href="{{ $social['url'] }}" target="_blank" rel="noopener noreferrer"
-                                   style="display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: {{ $social['color'] }}; color: white; border-radius: 50%; text-decoration: none; transition: all 0.3s;">
-                                    <i class="{{ $social['icon'] }}"></i>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
                 </div>
             </div>
-
-            <!-- General Enquiry Form -->
-            <div class="col-lg-8">
-                <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-                    <h3 class="mb-30">General Enquiry Form</h3>
-                    <p class="font-sm mb-30" style="color: #666;">
-                        If it's easier for you, feel free to use the form below to give us an idea of what you're looking for.
-                    </p>
-                    <form action="{{ route('bookNow') }}" method="POST" id="contactForm">
-                        @csrf
-                        <div class="row g-20">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Your Name <span class="text-danger">*</span></label>
-                                <input type="text" name="names" class="form-control" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Your Phone <span class="text-danger">*</span></label>
-                                <input type="text" name="phone" class="form-control" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Your Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Subject</label>
-                                <input type="text" name="subject" class="form-control" placeholder="What is this regarding?">
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Your Message <span class="text-danger">*</span></label>
-                                <textarea name="message" class="form-control" rows="6" required placeholder="Tell us how we can help you..."></textarea>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <div class="g-recaptcha" data-sitekey="6Lc-PHYrAAAAAGgl1VaQ32ICNEhtBag3vQtchlFJ"></div>
-                            </div>
-                            <div class="col-12">
-                                <button type="submit" class="theme-btn btn-style fill" style="width: 100%; padding: 15px; font-size: 18px;">
-                                    <span>Send Message</span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Google Map -->
-        <div class="row mt-60">
-            <div class="col-12">
-                <h3 class="mb-30">Find Us on Map</h3>
-                <div style="border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-height: 460px;">
+            <div class="col-lg-5">
+                <div class="contact-action-card" style="padding:0; overflow:hidden;">
                     @if(!empty($setting->google_map_embed))
                         {!! $setting->google_map_embed !!}
                     @else
@@ -210,20 +105,38 @@
                             $latitude = $hotelContact->latitude ?? '-1.9436';
                             $longitude = $hotelContact->longitude ?? '30.0641';
                         @endphp
-                        <iframe 
+                        <iframe
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.497311415315!2d{{ $longitude }}!3d{{ $latitude }}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z{{ $latitude }},{{ $longitude }}!5e0!3m2!1sen!2srw!4v1234567890"
-                            width="100%" 
-                            height="460" 
-                            style="border:0;" 
-                            allowfullscreen="" 
+                            width="100%"
+                            height="340"
+                            style="border:0;"
+                            allowfullscreen=""
                             loading="lazy">
                         </iframe>
                     @endif
                 </div>
             </div>
         </div>
+
+        @if(!empty($googleReviewsUrl) || !empty($tripadvisorReviewsUrl))
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="mb-2" style="color:#4b5563;">Check our public guest feedback:</p>
+                    @if(!empty($googleReviewsUrl))
+                        <a href="{{ $googleReviewsUrl }}" target="_blank" rel="noopener noreferrer" class="theme-btn btn-style sm-btn border me-2 mb-2">
+                            <span>Google Reviews</span>
+                        </a>
+                    @endif
+                    @if(!empty($tripadvisorReviewsUrl))
+                        <a href="{{ $tripadvisorReviewsUrl }}" target="_blank" rel="noopener noreferrer" class="theme-btn btn-style sm-btn border mb-2">
+                            <span>Tripadvisor Reviews</span>
+                        </a>
+                    @endif
+                </div>
+            </div>
+        @endif
     </div>
 </div>
-<!-- Contact End -->
+<!-- Contact/Booking End -->
 
 @endsection

@@ -29,102 +29,96 @@
 </div>
 <!-- Page Header End -->
 
+@php
+    $bookingUrl = trim((string) ($setting->linktree ?? ''));
+    $tripadvisorUrl = trim((string) ($setting->tripadvisor_reviews_url ?? ''));
+    $googleReviewsUrl = trim((string) ($setting->google_reviews_url ?? ''));
+@endphp
+
+<style>
+    .trust-card { background:#fff; border:1px solid #e9edf3; border-radius:12px; box-shadow:0 8px 24px rgba(16,24,40,.05); height:100%; }
+    .trust-card-head { padding:18px 18px 12px; border-bottom:1px solid #eef2f7; display:flex; align-items:center; gap:10px; }
+    .trust-card-body { padding:16px 18px; }
+    .trust-score { font-size:34px; line-height:1; color:#1f7a54; font-weight:700; }
+    .trust-muted { color:#6b7280; font-size:14px; }
+    .trust-action { display:block; width:100%; text-align:center; border-radius:8px; min-height:44px; line-height:44px; text-decoration:none; font-weight:600; border:1px solid #c9d8ef; }
+    .trust-action.primary { background:#165fc2; color:#fff; border-color:#165fc2; }
+    .trust-action.secondary { background:#fff; color:#165fc2; }
+</style>
+
 <!-- Reviews Section -->
-<div class="rts__section section__padding">
+<div class="rts__section section__padding" style="background:#f8fafc;">
     <div class="container">
-        <div class="row mb-40">
+        <div class="row mb-4">
             <div class="col-12 text-center">
-                <h2>All Reviews ({{ $reviewCount }})</h2>
-                <a href="#add-review" class="theme-btn btn-style fill mt-3">
-                    <span>Add Your Review</span>
-                </a>
+                <h2>Reviews you can trust</h2>
+                <p class="trust-muted mt-2 mb-0">
+                    We do not collect reviews on this website. Open each platform below to read or write a review.
+                </p>
             </div>
         </div>
-        
-        <div class="row g-30">
-            @forelse($reviews as $review)
-            <div class="col-lg-6 wow fadeInUp">
-                <div class="review__card" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); height: 100%;">
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="trust-card">
+                    <div class="trust-card-head">
+                        <i class="fas fa-bed" style="color:#1e5fbf;"></i>
                         <div>
-                            <h5 style="margin-bottom: 5px;">{{ $review->names }}</h5>
-                            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted' }}"></i>
-                                @endfor
-                            </div>
+                            <h5 class="mb-0">Booking.com</h5>
+                            <small class="trust-muted">Official listing</small>
                         </div>
-                        <span class="font-sm" style="color: #999;">{{ $review->created_at->format('M d, Y') }}</span>
                     </div>
-                    <p style="color: #666; line-height: 1.8; margin-bottom: 15px;">
-                        {{ $review->testimony }}
-                    </p>
-                    <a href="{{ route('review', ['id' => $review->id]) }}" class="theme-btn btn-style sm-btn border">
-                        <span>Read Full Review</span>
-                    </a>
+                    <div class="trust-card-body">
+                        <p class="trust-muted mb-3">Check property score and guest feedback directly on Booking.com.</p>
+                        @if(!empty($bookingUrl))
+                            <a href="{{ $bookingUrl }}" target="_blank" rel="noopener noreferrer" class="trust-action primary mb-2">Open Booking.com listing</a>
+                            <a href="{{ $bookingUrl }}" target="_blank" rel="noopener noreferrer" class="trust-action secondary">Write a review on Booking.com</a>
+                        @else
+                            <p class="mb-0 text-danger">Booking.com URL not configured in settings.</p>
+                        @endif
+                    </div>
                 </div>
             </div>
-            @empty
-            <div class="col-12 text-center">
-                <p class="font-lg">No reviews yet. Be the first to review!</p>
-            </div>
-            @endforelse
-        </div>
 
-        <!-- Pagination -->
-        @if($reviews->hasPages())
-        <div class="row mt-40">
-            <div class="col-12">
-                {{ $reviews->links('vendor.pagination.bootstrap-5-custom') }}
-            </div>
-        </div>
-        @endif
-
-        <!-- Add Review Form -->
-        <div class="row mt-60" id="add-review">
-            <div class="col-lg-8 mx-auto">
-                <div style="background: #f9f9f9; padding: 40px; border-radius: 10px;">
-                    <h3 class="text-center mb-30">Share Your Experience</h3>
-                    <form action="{{ route('reviews.store') }}" method="POST">
-                        @csrf
-                        <div class="row g-20">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Your Name <span class="text-danger">*</span></label>
-                                <input type="text" name="names" class="form-control" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Your Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Rating <span class="text-danger">*</span></label>
-                                <select name="rating" class="form-control" required>
-                                    <option value="">Select Rating</option>
-                                    <option value="5">5 - Excellent</option>
-                                    <option value="4">4 - Very Good</option>
-                                    <option value="3">3 - Good</option>
-                                    <option value="2">2 - Fair</option>
-                                    <option value="1">1 - Poor</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Website (Optional)</label>
-                                <input type="url" name="website" class="form-control">
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Your Review <span class="text-danger">*</span></label>
-                                <textarea name="testimony" class="form-control" rows="5" required placeholder="Share your experience..."></textarea>
-                            </div>
-                            <div class="col-12 text-center">
-                                <button type="submit" class="theme-btn btn-style fill">
-                                    <span>Submit Review</span>
-                                </button>
-                                <p class="font-sm mt-3" style="color: #999;">
-                                    Your review will be published after admin approval.
-                                </p>
-                            </div>
+            <div class="col-lg-4">
+                <div class="trust-card">
+                    <div class="trust-card-head">
+                        <i class="fab fa-tripadvisor" style="color:#34b28a;"></i>
+                        <div>
+                            <h5 class="mb-0">TripAdvisor</h5>
+                            <small class="trust-muted">Traveler ranking & reviews</small>
                         </div>
-                    </form>
+                    </div>
+                    <div class="trust-card-body">
+                        <p class="trust-muted mb-3">View guest experiences and rankings on TripAdvisor.</p>
+                        @if(!empty($tripadvisorUrl))
+                            <a href="{{ $tripadvisorUrl }}" target="_blank" rel="noopener noreferrer" class="trust-action primary mb-2">Open TripAdvisor listing</a>
+                            <a href="{{ $tripadvisorUrl }}" target="_blank" rel="noopener noreferrer" class="trust-action secondary">Write a review on TripAdvisor</a>
+                        @else
+                            <p class="mb-0 text-danger">TripAdvisor URL not configured in settings.</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="trust-card">
+                    <div class="trust-card-head">
+                        <i class="fab fa-google" style="color:#2563eb;"></i>
+                        <div>
+                            <h5 class="mb-0">Google</h5>
+                            <small class="trust-muted">Maps & Business profile</small>
+                        </div>
+                    </div>
+                    <div class="trust-card-body">
+                        <p class="trust-muted mb-3">Read ratings and leave your feedback on Google Maps.</p>
+                        @if(!empty($googleReviewsUrl))
+                            <a href="{{ $googleReviewsUrl }}" target="_blank" rel="noopener noreferrer" class="trust-action primary mb-2">Open Google Maps listing</a>
+                            <a href="{{ $googleReviewsUrl }}" target="_blank" rel="noopener noreferrer" class="trust-action secondary">Write a review on Google</a>
+                        @else
+                            <p class="mb-0 text-danger">Google reviews URL not configured in settings.</p>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>

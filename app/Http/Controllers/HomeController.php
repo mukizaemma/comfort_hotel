@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
-use App\Models\Booking;
 use App\Models\Post;
 use App\Models\Room;
 use App\Models\Trip;
@@ -411,87 +410,14 @@ class HomeController extends Controller
     }
 
     public function bookNow(Request $request){
-        $isFacility = $request->filled('facility_id');
-        $isTourActivity = $request->filled('tour_activity_id');
+        $setting = Setting::first();
+        $bookingUrl = $this->getBookingComUrl($setting);
 
-        $rules = [
-            'names' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'message' => 'nullable|string|max:1000',
-        ];
-
-        if ($isFacility) {
-            $rules['facility_id'] = 'required|exists:facilities,id';
-            $rules['reservation_date'] = 'required|date|after_or_equal:today';
-            $rules['guests'] = 'required|integer|min:1';
-        } else {
-            $rules['checkin'] = 'required|date|after_or_equal:today';
-            $rules['checkout'] = 'required|date|after:checkin';
-            $rules['adults'] = 'required|integer|min:1';
-            $rules['children'] = 'nullable|integer|min:0';
-
-            if ($isTourActivity) {
-                $rules['tour_activity_id'] = 'required|exists:tour_activities,id';
-            } else {
-                $rules['room_id'] = 'required|exists:rooms,id';
-            }
+        if ($bookingUrl) {
+            return redirect()->away($bookingUrl);
         }
 
-        $request->validate($rules);
-
-        $booking = new Booking();
-        $booking->names = $request->input('names');
-        $booking->email = $request->input('email');
-        $booking->phone = $request->input('phone');
-        $booking->message = $request->input('message');
-
-        if ($isFacility) {
-            $booking->checkin_date = $request->input('reservation_date');
-            $booking->checkout_date = $request->input('reservation_date');
-            $booking->adults = $request->input('guests');
-            $booking->children = 0;
-        } else {
-            $booking->checkin_date = $request->input('checkin');
-            $booking->checkout_date = $request->input('checkout');
-            $booking->adults = $request->input('adults');
-            $booking->children = $request->input('children') ?? 0;
-        }
-        $booking->status = 'pending';
-        $booking->booking_type = 'online';
-        $booking->paid_amount = 0;
-
-        if ($isTourActivity) {
-            $booking->tour_activity_id = $request->input('tour_activity_id');
-            $booking->reservation_type = 'tour_activity';
-            $booking->room_id = null;
-            $booking->facility_id = null;
-            $booking->total_amount = 0;
-            $booking->balance_amount = 0;
-        } elseif ($isFacility) {
-            $booking->facility_id = $request->input('facility_id');
-            $booking->reservation_type = 'facility';
-            $booking->room_id = null;
-            $booking->tour_activity_id = null;
-            $booking->total_amount = 0;
-            $booking->balance_amount = 0;
-        } else {
-            $booking->room_id = $request->input('room_id');
-            $booking->reservation_type = 'room';
-            $booking->facility_id = null;
-            $booking->tour_activity_id = null;
-            $room = Room::findOrFail($request->input('room_id'));
-            $checkin = new \DateTime($request->input('checkin'));
-            $checkout = new \DateTime($request->input('checkout'));
-            $nights = $checkin->diff($checkout)->days;
-            $booking->total_amount = ($room->price ?? 0) * $nights;
-            $booking->balance_amount = $booking->total_amount;
-        }
-
-        if ($booking->save()) {
-            return redirect()->back()->with('success', 'Your reservation has been submitted successfully. We will get back to you soon.');
-        }
-        return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
+        return redirect()->route('contact')->with('error', 'Booking link is not configured yet. Please contact us directly.');
     }
 
     public function tours(){
@@ -502,6 +428,30 @@ class HomeController extends Controller
             'tours'=>$tours,
             'setting'=>$setting,
             'about'=>$about,
+        ]);
+    }
+
+    private function getBookingComUrl(?Setting $setting): ?string
+    {
+        $url = trim((string) ($setting->linktree ?? ''));
+        if ($url === '') {
+            return null;
+        }
+
+        return Str::contains(Str::lower($url), 'booking.com') ? $url : null;
+    }
+
+    public function connect(){
+        $setting = Setting::first();
+        $about = About::first();
+        $pageHero = PageHero::getBySlug('book-now');
+        $hotelContact = \App\Models\HotelContact::first();
+        return view('frontend.contact',[
+            'setting'=>$setting,
+            'about'=>$about,
+            'pageHero'=>$pageHero,
+            'hotelContact'=>$hotelContact,
+            'isBookingPage'=>true,
         ]);
     }
 
@@ -519,17 +469,6 @@ class HomeController extends Controller
             'allTrips'=>$allTrips,
             'setting'=>$setting,
             'about'=>$about,
-        ]);
-    }
-
-    public function connect(){
-        $setting = Setting::first();
-        $about = About::first();
-        $pageHero = PageHero::getBySlug('book-now');
-        return view('frontend.contact',[
-            'setting'=>$setting,
-            'about'=>$about,
-            'pageHero'=>$pageHero,
         ]);
     }
 

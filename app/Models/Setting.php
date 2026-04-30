@@ -27,6 +27,8 @@ class Setting extends Model
         'youtube',
         'linkedin',
         'linktree',
+        'google_reviews_url',
+        'tripadvisor_reviews_url',
         'quote',
         'google_map_embed',
     ];

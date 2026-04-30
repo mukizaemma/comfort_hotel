@@ -12,6 +12,7 @@ use App\Models\Getinvolved;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class SettingsController extends Controller
 {
@@ -38,6 +39,24 @@ class SettingsController extends Controller
 
 
     public function saveSetting(Request $request){
+        $request->validate([
+            'linktree' => ['nullable', 'url', function ($attribute, $value, $fail) {
+                if (!empty($value) && !Str::contains(Str::lower($value), 'booking.com')) {
+                    $fail('Booking URL must be a valid booking.com link.');
+                }
+            }],
+            'google_reviews_url' => ['nullable', 'url', function ($attribute, $value, $fail) {
+                if (!empty($value) && !Str::contains(Str::lower($value), 'google.')) {
+                    $fail('Google reviews URL must be a valid Google link.');
+                }
+            }],
+            'tripadvisor_reviews_url' => ['nullable', 'url', function ($attribute, $value, $fail) {
+                if (!empty($value) && !Str::contains(Str::lower($value), 'tripadvisor.')) {
+                    $fail('Tripadvisor reviews URL must be a valid Tripadvisor link.');
+                }
+            }],
+        ]);
+
         $data = Setting::first();
         $data->company = $request->input('company');
         $data->address = $request->input('address');
@@ -52,6 +71,8 @@ class SettingsController extends Controller
         $data->youtube = $request->input('youtube');
         $data->linkedin = $request->input('linkedin');
         $data->linktree = $request->input('linktree');
+        $data->google_reviews_url = $request->input('google_reviews_url');
+        $data->tripadvisor_reviews_url = $request->input('tripadvisor_reviews_url');
         $data->keywords = $request->input('keywords');
         $data->quote = $request->input('quote');
         $data->google_map_embed = $request->input('google_map_embed');

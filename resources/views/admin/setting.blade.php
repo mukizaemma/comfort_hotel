@@ -128,8 +128,17 @@
                                         <input type="url" class="form-control" id="linkedin" name="linkedin" value="{{ old('linkedin', $data->linkedin ?? '') }}" placeholder="https://">
                                     </div>
                                     <div class="col-12">
-                                        <label for="linktree" class="form-label">Booking link</label>
-                                        <input type="text" class="form-control" id="linktree" name="linktree" value="{{ $data->linktree ?? '' }}">
+                                        <label for="linktree" class="form-label">Booking.com URL</label>
+                                        <input type="url" class="form-control" id="linktree" name="linktree" value="{{ old('linktree', $data->linktree ?? '') }}" placeholder="https://www.booking.com/hotel/...">
+                                        <small class="text-muted">All booking buttons redirect to this Booking.com link.</small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="google_reviews_url" class="form-label">Google Reviews URL</label>
+                                        <input type="url" class="form-control" id="google_reviews_url" name="google_reviews_url" value="{{ old('google_reviews_url', $data->google_reviews_url ?? '') }}" placeholder="https://www.google.com/maps/place/...">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="tripadvisor_reviews_url" class="form-label">Tripadvisor Reviews URL</label>
+                                        <input type="url" class="form-control" id="tripadvisor_reviews_url" name="tripadvisor_reviews_url" value="{{ old('tripadvisor_reviews_url', $data->tripadvisor_reviews_url ?? '') }}" placeholder="https://www.tripadvisor.com/Hotel_Review-...">
                                     </div>
                                 </div>
                             </fieldset>
