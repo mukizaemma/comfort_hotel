@@ -737,6 +737,31 @@
     </div>
     <!-- Preloader end -->
 
+    <script>
+        (function () {
+            var hidePreloader = function () {
+                document.body.classList.add('loaded');
+                var preloader = document.getElementById('site-preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    preloader.style.visibility = 'hidden';
+                    preloader.style.pointerEvents = 'none';
+                    preloader.style.display = 'none';
+                }
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', hidePreloader, { once: true });
+            } else {
+                hidePreloader();
+            }
+
+            window.addEventListener('load', hidePreloader, { once: true });
+            window.addEventListener('pageshow', hidePreloader, { once: true });
+            setTimeout(hidePreloader, 2000);
+        })();
+    </script>
+
 
     <!-- plugin js -->
     <script src="assets/js/plugins.min.js"></script>
@@ -750,8 +775,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-document.getElementById('application-form').addEventListener('submit', function(e) {
+<script>
+const applicationForm = document.getElementById('application-form');
+if (applicationForm) {
+applicationForm.addEventListener('submit', function(e) {
 
     e.preventDefault();
 
@@ -764,6 +791,7 @@ document.getElementById('application-form').addEventListener('submit', function(
 
     this.submit();
 });
+}
 
     flatpickr("#check__in", {
         minDate: "today",
